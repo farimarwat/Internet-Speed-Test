@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="background">@color/primaryDark</color>
+    <color name="primary">#616161</color>
+    <color name="primaryDark">#373737</color>
+    <color name="primaryLight">#8e8e8e</color>
+
+    <color name="secondary">#00e5ff</color>
+    <color name="secondaryDark">#00b2cc</color>
+    <color name="secondaryLight">#6effff</color>
+
+    <color name="yellowPrimary">#ff8f00</color>
+    <color name="yellowDark">#c56000</color>
+    <color name="yellowLight">#ffc046</color>
+
+    <color name="bluePrimary">#2962ff</color>
+    <color name="blueDark">#0039cb</color>
+    <color name="blueLight">#768fff</color>
+
+    <color name="colorBackground">#141526</color>
+    <color name="colorTransparent">#00ffffff</color>
+    <color name="colorCircularProgressBarBackground">#232f4e</color>
+    <color name="colorActiveGaugeText">#ffffff</color>
+    <color name="colorNotActiveGaugeText">#80ffffff</color>
+    <color name="download">#29daef</color>
+    <color name="upload">#9b33ef</color>
+</resources>

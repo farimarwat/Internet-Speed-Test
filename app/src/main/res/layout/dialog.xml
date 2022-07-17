@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:layout_marginTop="24dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="16dp"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/bg_dialog_container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is my text which i wan tto show"
+            android:textColor="@color/secondaryLight" />
+        <LinearLayout
+            android:id="@+id/container_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/txt_message"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            >
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_negative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="@color/secondary"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/secondary"
+                android:layout_marginHorizontal="8dp"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="@color/secondary"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/secondary"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_dialog_title_icon"
+        app:layout_constraintBottom_toTopOf="@+id/container"
+        android:src="@drawable/ic_baseline_info_24"
+        android:tint="@color/secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/container" />
+</androidx.constraintlayout.widget.ConstraintLayout>
