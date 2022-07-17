@@ -31,8 +31,8 @@ class TestmainFragmentViewModel @Inject constructor(
     val mTimeOut by lazy { 12 }
     var mBuilderUpload: TestUploader? = null
     var mBuilderDownload: TestDownloader? = null
-    val mEntryDownload by lazy { MutableLiveData<ArrayList<Entry>>(null) }
-    val mEntryUpload by lazy { MutableLiveData<ArrayList<Entry>>(null) }
+    val mEntryDownload by lazy { MutableLiveData<Entry>(null) }
+    val mEntryUpload by lazy { MutableLiveData<Entry>(null) }
 
     val expDownload = CoroutineExceptionHandler { coroutineContext, throwable ->
         val msg = throwable.message
@@ -53,11 +53,11 @@ class TestmainFragmentViewModel @Inject constructor(
 
                 override fun onProgress(progress: Double, elapsedTimeMillis: Int) {
                     mSpeed.value = progress
-                    val x = elapsedTimeMillis / 1000f
+                    val x = elapsedTimeMillis.toFloat()
                     if (x != xCounter) {
                         xCounter = x
-                        list.add(Entry(xCounter, progress.toFloat()))
-                        mEntryDownload.postValue(list)
+                        mEntryDownload.postValue(null)
+                        mEntryDownload.postValue(Entry(xCounter, progress.toFloat()))
                     }
                 }
 
@@ -105,11 +105,11 @@ class TestmainFragmentViewModel @Inject constructor(
 
                 override fun onProgress(progress: Double, elapsedTimeMillis: Int) {
                     mSpeed.value = progress
-                    val x = elapsedTimeMillis / 1000f
+                    val x = elapsedTimeMillis.toFloat()
                     if (x != xCounter) {
                         xCounter = x
-                        list.add(Entry(xCounter, progress.toFloat()))
-                        mEntryUpload.postValue(list)
+                        mEntryUpload.postValue(null)
+                        mEntryUpload.postValue(Entry(xCounter, progress.toFloat()))
                     }
                 }
 

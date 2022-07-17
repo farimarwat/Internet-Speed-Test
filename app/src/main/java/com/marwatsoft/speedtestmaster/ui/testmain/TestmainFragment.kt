@@ -164,10 +164,10 @@ class TestmainFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mEntryDownload.observe(viewLifecycleOwner) {
-                    it?.let { list ->
+                    it?.let { entry ->
                         val set1 =
                             binding.linechartStrength.data.getDataSetByIndex(1) as LineDataSet
-                        set1.values = list
+                        set1.addEntry(entry)
                         binding.linechartStrength.data.notifyDataChanged()
                         binding.linechartStrength.notifyDataSetChanged()
                         binding.linechartStrength.invalidate()
@@ -179,10 +179,10 @@ class TestmainFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mEntryUpload.observe(viewLifecycleOwner) {
-                    it?.let { list ->
+                    it?.let { entry ->
                         val set1 =
                             binding.linechartStrength.data.getDataSetByIndex(2) as LineDataSet
-                        set1.values = list
+                        set1.addEntry(entry)
                         binding.linechartStrength.data.notifyDataChanged()
                         binding.linechartStrength.notifyDataSetChanged()
                         binding.linechartStrength.invalidate()
@@ -242,19 +242,21 @@ class TestmainFragment : Fragment() {
 
         //Dummy line
         val list = ArrayList<Entry>()
-        for(i in 0..mViewModel.mTimeOut){
-            list.add(Entry(i.toFloat(),i.toFloat()))
-        }
+//        for(i in 0..mViewModel.mTimeOut){
+//            list.add(Entry(i.toFloat(),i.toFloat()))
+//        }
+        list.add(Entry(0f,0f))
+        list.add(Entry(12000f,0f))
         val dummydataset = LineDataSet(list,"Speed")
         dummydataset.setDrawCircles(false)
         dummydataset.color = ContextCompat.getColor(context, R.color.colorBackground)
-        dummydataset.mode = LineDataSet.Mode.CUBIC_BEZIER
+        dummydataset.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
         //End dummy line
 
         val downloadDataset = LineDataSet(mListDownload, "Speed")
         downloadDataset.setDrawCircles(false)
         downloadDataset.color = ContextCompat.getColor(context, R.color.download)
-        downloadDataset.mode = LineDataSet.Mode.CUBIC_BEZIER
+        downloadDataset.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
 
 
         val uploadDataSet = LineDataSet(mListUpload, "Speed")
@@ -276,6 +278,7 @@ class TestmainFragment : Fragment() {
             axisLeft.setDrawAxisLine(false)
             axisRight.setDrawGridLines(false)
             axisRight.setDrawAxisLine(false)
+            animateX(3000,Easing.Linear)
             description.isEnabled = false
             legend.isEnabled = false
             setDrawBorders(false)
@@ -288,13 +291,20 @@ class TestmainFragment : Fragment() {
     }
 
     fun startTest() {
+        val downloaddataset = binding.linechartStrength
+            .data.getDataSetByIndex(1) as LineDataSet
+        downloaddataset.values = ArrayList<Entry>()
+        val uploaddataset = binding.linechartStrength
+            .data.getDataSetByIndex(2) as LineDataSet
+        uploaddataset.values = ArrayList<Entry>()
+        binding.txtNumberDownload.text = "--"
+        binding.txtNumberUpload.text = "--"
         mUrl = mUrl.replace(
             mUrl.split("/").toTypedArray()[mUrl.split("/")
                 .toTypedArray().size - 1],
             ""
         )
         mUrl = mUrl.replace("http://", "https://")
-        Timber.e("Prepared Url: ${mUrl}")
         mViewModel.startDownloadTest(mUrl)
     }
 
