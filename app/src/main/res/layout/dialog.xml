@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="This is my text which i wan tto show"
-            android:textColor="@color/secondaryLight" />
+            android:textColor="@color/greyPrimary" />
         <LinearLayout
             android:id="@+id/container_buttons"
             android:layout_width="wrap_content"
@@ -40,9 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
-                android:textColor="@color/secondary"
+                android:textColor="@color/greyPrimary"
                 app:cornerRadius="10dp"
-                app:strokeColor="@color/secondary"
+                app:strokeColor="@color/greyPrimary"
                 android:layout_marginHorizontal="8dp"
                 android:visibility="gone"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -52,9 +52,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
-                android:textColor="@color/secondary"
+                android:textColor="@color/greyPrimary"
                 app:cornerRadius="10dp"
-                app:strokeColor="@color/secondary"
+                app:strokeColor="@color/greyPrimary"
                 android:visibility="gone"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
@@ -68,8 +68,8 @@
         android:background="@drawable/bg_dialog_title_icon"
         app:layout_constraintBottom_toTopOf="@+id/container"
         android:src="@drawable/ic_baseline_info_24"
-        android:tint="@color/secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/container" />
+        app:layout_constraintTop_toTopOf="@+id/container"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

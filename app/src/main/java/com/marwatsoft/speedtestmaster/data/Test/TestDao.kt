@@ -1,5 +1,6 @@
 package com.marwatsoft.speedtestmaster.data.Test
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -14,7 +15,7 @@ interface TestDao {
     suspend fun insert(test: Test)
 
     @Query("SELECT * FROM testhistory ORDER BY _id DESC")
-    fun listAll():Flow<List<Test>>
+    fun listAll():PagingSource<Int,Test>
 
     @Delete
     suspend fun delete(test: Test)

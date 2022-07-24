@@ -22,4 +22,9 @@
     <style name="Theme.SpeedTestMaster.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.SpeedTestMaster.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ButtonConnectionType" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/greyPrimary</item>
+        <item name="rippleColor">@color/greyPrimary</item>
+    </style>
 </resources>

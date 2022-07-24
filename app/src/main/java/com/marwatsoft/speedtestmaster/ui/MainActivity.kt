@@ -33,32 +33,34 @@ class MainActivity : AppCompatActivity() {
         mNavController = findNavController(R.id.nav_host_fragment_content_main)
         supportActionBar?.hide()
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.mainFragment,R.id.historyFragment,R.id.settingsFragment)
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomnavigation.setupWithNavController(navController)
-        binding.bottomnavigation.setOnItemSelectedListener(object :NavigationBarView.OnItemSelectedListener{
-            override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                return when(item.itemId){
-                    R.id.mainFragment ->{
-                        navController.popBackStack()
-                        navController.navigate(R.id.mainFragment)
-                        true
-                    }
-                    R.id.historyFragment ->{
-                        navController.popBackStack()
-                        navController.navigate(R.id.historyFragment)
-                         true
-                    }
-                    R.id.settingsFragment ->{
-                        navController.popBackStack()
-                        navController.navigate(R.id.settingsFragment)
-                         true
-                    }
-                    else -> {  false}
-                }
-            }
-
-        })
+//        binding.bottomnavigation.setOnItemSelectedListener(object :NavigationBarView.OnItemSelectedListener{
+//            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//                return when(item.itemId){
+//                    R.id.mainFragment ->{
+//                        navController.popBackStack()
+//                        navController.navigate(R.id.mainFragment)
+//                        true
+//                    }
+//                    R.id.historyFragment ->{
+//                        navController.popBackStack()
+//                        navController.navigate(R.id.historyFragment)
+//                         true
+//                    }
+//                    R.id.settingsFragment ->{
+//                        navController.popBackStack()
+//                        navController.navigate(R.id.settingsFragment)
+//                         true
+//                    }
+//                    else -> {  false}
+//                }
+//            }
+//
+//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

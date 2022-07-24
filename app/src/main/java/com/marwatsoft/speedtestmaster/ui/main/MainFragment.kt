@@ -84,8 +84,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initGui()
         //Listening network listener
-        lifecycleScope.launchWhenCreated {
-            mViewModel.loadServers()
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED){
+                if(mViewModel.mServers == null){
+                    mViewModel.loadServers()
+                }
+            }
         }
 
         //Collecting Server List
@@ -123,6 +127,7 @@ class MainFragment : Fragment() {
 
                             //setting server list
                             val list = it.list as MutableList<STServer>
+                            mViewModel.mServers = list
                             if (list.isNotEmpty()) {
                                 val server = list.first()
                                 mViewModel.mSTServerSelected.value = server
@@ -158,7 +163,6 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
 
     }
 

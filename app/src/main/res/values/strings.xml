@@ -30,4 +30,9 @@
     <string name="jitter">Jitter</string>
     <string name="testhistoryitem_download">%1$s Mbps</string>
     <string name="testhistoryitem_upload">%1$s Mbps</string>
+    <string name="single">Single</string>
+    <string name="multiple">Multiple</string>
+    <string name="help_connections">By selecting multiple option, multiple connections are established
+        to the test server to increase performance and accuracy.
+    </string>
 </resources>

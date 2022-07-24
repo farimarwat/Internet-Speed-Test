@@ -38,6 +38,7 @@ class MainFragmentViewModel @Inject constructor(
 ): ViewModel() {
     val mSTProvider by lazy { MutableLiveData<STProvider>(null) }
     val mListSTServer by lazy { MutableStateFlow<ApiStatus>(ApiStatus.Loading) }
+    var mServers:List<STServer>? = null
 
    var mNetworkCallback:ConnectivityManager.NetworkCallback? = null
     val mSTServerSelected by lazy { MutableLiveData<STServer>(null) }

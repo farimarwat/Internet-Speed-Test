@@ -15,6 +15,7 @@ import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.adapters.TestHistoryAdapter
 import com.marwatsoft.speedtestmaster.databinding.FragmentHistoryBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,15 +34,7 @@ class HistoryFragment : Fragment() {
     ): View? {
         binding = FragmentHistoryBinding.inflate(inflater,container,false)
         mContext = requireContext()
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                mViewModel.listAll().collect{
-                    if(it.isNotEmpty()){
-                        mAdapter.submitList(it)
-                    }
-                }
-            }
-        }
+
 
         return binding.root
     }
@@ -50,6 +43,14 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initGui()
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                delay(200)
+                mViewModel.listAll().collect{
+                    mAdapter.submitData(it)
+                }
+            }
+        }
     }
     fun initGui(){
         binding.recyclerviewTesthistory.apply {
