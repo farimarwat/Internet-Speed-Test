@@ -58,7 +58,7 @@ class MainFragmentViewModel @Inject constructor(
             }
 
             override fun onSuccess(response: ServersResponse) {
-                Timber.e("${response.provider}")
+                mSTProvider.postValue(response.provider)
                 response.servers?.let {
                     mListSTServer.value = ApiStatus.Success(it)
                 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import pk.farimarwat.speedtest.Ping
 import pk.farimarwat.speedtest.TestDownloader
 import pk.farimarwat.speedtest.TestUploader
 import pk.farimarwat.speedtest.models.TESTTYPE_DOWNLOAD
@@ -33,6 +34,8 @@ class TestmainFragmentViewModel @Inject constructor(
     var mBuilderDownload: TestDownloader? = null
     val mEntryDownload by lazy { MutableLiveData<Entry>(null) }
     val mEntryUpload by lazy { MutableLiveData<Entry>(null) }
+    val mPing by lazy { MutableStateFlow(0) }
+    val mJitter by lazy { MutableStateFlow(0) }
 
     val expDownload = CoroutineExceptionHandler { coroutineContext, throwable ->
         val msg = throwable.message
@@ -51,26 +54,19 @@ class TestmainFragmentViewModel @Inject constructor(
                     mTestingStatus.value = TestingStatus.Testing(true, TESTTYPE_DOWNLOAD)
                 }
 
-                override fun onProgress(progress: Double, elapsedTimeMillis: Int) {
+                override fun onProgress(progress: Double, elapsedTimeMillis: Double) {
                     mSpeed.value = progress
-                    val x = elapsedTimeMillis.toFloat()
-                    if (x != xCounter) {
-                        xCounter = x
-                        mEntryDownload.postValue(null)
-                        mEntryDownload.postValue(Entry(xCounter, progress.toFloat()))
-                    }
-                }
-
-                override fun onStopped() {
-
+                    mEntryDownload.postValue(null)
+                    mEntryDownload.postValue(Entry((elapsedTimeMillis*1000).toFloat(), progress.toFloat()))
                 }
 
                 override fun onFinished(
                     finalprogress: Double,
                     datausedinkb: Int,
-                    elapsedTimeMillis: Int
+                    elapsedTimeMillis: Double
                 ) {
                     mTestingStatus.value = TestingStatus.Finished(TESTTYPE_DOWNLOAD)
+                    Timber.e("ElapsedTime: ${elapsedTimeMillis}")
                 }
 
                 override fun onError(msg: String) {
@@ -82,7 +78,7 @@ class TestmainFragmentViewModel @Inject constructor(
             .build()
         mBuilderDownload?.start()
     }
-//End Download Test
+    //End Download Test
 
     //upload test
     val expUpload = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -103,29 +99,24 @@ class TestmainFragmentViewModel @Inject constructor(
                     mTestingStatus.value = TestingStatus.Testing(true, TESTTYPE_UPLOAD)
                 }
 
-                override fun onProgress(progress: Double, elapsedTimeMillis: Int) {
+                override fun onProgress(progress: Double, elapsedTimeMillis: Double) {
                     mSpeed.value = progress
-                    val x = elapsedTimeMillis.toFloat()
-                    if (x != xCounter) {
-                        xCounter = x
-                        mEntryUpload.postValue(null)
-                        mEntryUpload.postValue(Entry(xCounter, progress.toFloat()))
-                    }
+                    mEntryUpload.postValue(null)
+                    mEntryUpload.postValue(Entry((elapsedTimeMillis*1000).toFloat(), progress.toFloat()))
                 }
 
-                override fun onStopped() {
-                }
 
                 override fun onFinished(
                     finalprogress: Double,
                     datausedinkb: Int,
-                    elapsedTimeMillis: Int
+                    elapsedTimeMillis: Double
                 ) {
                     mTestingStatus.value = TestingStatus.Finished(TESTTYPE_UPLOAD)
                 }
 
                 override fun onError(msg: String) {
                     mTestingStatus.value = TestingStatus.Error(msg)
+
                 }
 
             })
@@ -142,6 +133,33 @@ class TestmainFragmentViewModel @Inject constructor(
 
         mBuilderDownload?.stop()
         mBuilderDownload?.removeListener()
+    }
+
+   fun startPing(url:String) = viewModelScope.launch{
+        val builder = Ping.Builder(url)
+            .setListener(object :Ping.PingListener{
+                override fun onStarted() {
+
+                }
+
+                override fun onError(error: String) {
+                    Timber.e("PingError: ${error}")
+                }
+
+                override fun onInstantRtt(instantRtt: Double) {
+                }
+
+                override fun onAvgRtt(avgRtt: Double) {
+                    mPing.value = avgRtt.toInt()
+                }
+
+                override fun onFinished(jitter: Int) {
+                    mJitter.value = jitter.toInt()
+                }
+
+            })
+            .build()
+        builder.start()
     }
 
     override fun onCleared() {

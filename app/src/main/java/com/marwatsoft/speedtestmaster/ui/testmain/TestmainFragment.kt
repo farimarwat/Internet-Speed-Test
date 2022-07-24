@@ -1,7 +1,6 @@
 package com.marwatsoft.speedtestmaster.ui.testmain
 
 import android.animation.ValueAnimator
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.navArgs
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
@@ -26,11 +24,10 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.marwatsoft.speedtestmaster.R
+import com.marwatsoft.speedtestmaster.data.Test.Test
+import com.marwatsoft.speedtestmaster.data.Test.TestRepo
 import com.marwatsoft.speedtestmaster.databinding.FragmentTestmainBinding
-import com.marwatsoft.speedtestmaster.helpers.DialogButtonClickListener
-import com.marwatsoft.speedtestmaster.helpers.STDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,6 +36,9 @@ import pk.farimarwat.speedtest.models.TESTTYPE_DOWNLOAD
 import pk.farimarwat.speedtest.models.TESTTYPE_UPLOAD
 import pk.farimarwat.speedtest.models.TestingStatus
 import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class TestmainFragment : Fragment() {
@@ -47,6 +47,10 @@ class TestmainFragment : Fragment() {
     val mViewModel: TestmainFragmentViewModel by viewModels()
     val mNavArgs: TestmainFragmentArgs by navArgs()
     lateinit var mUrl: String
+    @Inject
+    lateinit var mTestRepo:TestRepo
+    var mDownloadSpeed = 0.0
+    var mUploadSpeed = 0.0
 
     // line chart
     lateinit var mListDownload: ArrayList<Entry>
@@ -113,12 +117,16 @@ class TestmainFragment : Fragment() {
                             binding.groupSpeedtest.visibility = View.GONE
                             binding.containerError.visibility = View.VISIBLE
                             binding.txtError.text = "Error: ${it.error}"
+                            mViewModel.stopTesting()
+                            binding.txtDownload.clearAnimation()
+                            binding.txtUpload.clearAnimation()
                         }
                         is TestingStatus.Canceled -> {
                             binding.groupSpeedtest.visibility = View.GONE
                         }
                         is TestingStatus.Finished -> {
                             if (it.testtype == TESTTYPE_DOWNLOAD) {
+                                mDownloadSpeed = mViewModel.mSpeed.value
                                 binding.txtDownload.clearAnimation()
                                 val mlastSpeed = mViewModel.mSpeed.value.toString()
                                 binding.txtNumberDownload.text = mlastSpeed
@@ -127,11 +135,20 @@ class TestmainFragment : Fragment() {
                                 binding.speedView.setProgress(0f)
                                 mViewModel.startUploadTest(mUrl!!)
                             } else if (it.testtype == TESTTYPE_UPLOAD) {
+                                mUploadSpeed = mViewModel.mSpeed.value
+                                val c = Calendar.getInstance()
+                                val date = c.time
+                                mTestRepo.insert(
+                                    Test(
+                                        0,mDownloadSpeed,mUploadSpeed,
+                                        mNavArgs.testserver,mNavArgs.provider,date
+                                    )
+                                )
+                                mViewModel.mTestingStatus.value = TestingStatus.Idle
                                 binding.txtUpload.clearAnimation()
                                 val mlastSpeed = mViewModel.mSpeed.value.toString()
                                 binding.txtNumberUpload.text = mlastSpeed
                                 delay(1000)
-                                mViewModel.mSpeed.value = 0.0
                                 binding.speedView.setProgress(0f)
                                 showAdd()
                             }
@@ -196,6 +213,23 @@ class TestmainFragment : Fragment() {
                 loadBannerAd()
             }
         }
+
+        //Collecting Ping
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                mViewModel.mPing.collect{
+                    binding.txtNumberPing.text = "${it}"
+                }
+            }
+        }
+        //Collecting Jitter
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                mViewModel.mJitter.collect{
+                    binding.txtNumberJitter.text = "${it}"
+                }
+            }
+        }
     }
 
     fun initGui() {
@@ -216,13 +250,13 @@ class TestmainFragment : Fragment() {
 
         })
         binding.btnRestart.setOnClickListener {
-            YoYo.with(Techniques.FadeInUp)
+            YoYo.with(Techniques.FadeInDown)
                 .onStart {
-                    binding.speedView.visibility = View.VISIBLE
                     YoYo.with(Techniques.FadeOutUp)
-                        .duration(700)
+                        .duration(200)
                         .onEnd {
                             binding.containerAdd.visibility = View.GONE
+                            binding.speedView.visibility = View.VISIBLE
                         }
                         .playOn(binding.containerAdd)
                 }
@@ -231,6 +265,9 @@ class TestmainFragment : Fragment() {
                     startTest()
                 }
                 .playOn(binding.speedView)
+        }
+        binding.btnRetry.setOnClickListener{
+            startTest()
         }
 
         setupLineChart(mContext)
@@ -246,23 +283,25 @@ class TestmainFragment : Fragment() {
 //            list.add(Entry(i.toFloat(),i.toFloat()))
 //        }
         list.add(Entry(0f,0f))
-        list.add(Entry(12000f,0f))
+        list.add(Entry((mViewModel.mTimeOut*1000).toFloat(),0f))
         val dummydataset = LineDataSet(list,"Speed")
         dummydataset.setDrawCircles(false)
         dummydataset.color = ContextCompat.getColor(context, R.color.colorBackground)
-        dummydataset.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        dummydataset.mode = LineDataSet.Mode.CUBIC_BEZIER
         //End dummy line
 
         val downloadDataset = LineDataSet(mListDownload, "Speed")
         downloadDataset.setDrawCircles(false)
         downloadDataset.color = ContextCompat.getColor(context, R.color.download)
-        downloadDataset.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        downloadDataset.mode = LineDataSet.Mode.CUBIC_BEZIER
+        downloadDataset.lineWidth = 2F
 
 
         val uploadDataSet = LineDataSet(mListUpload, "Speed")
         uploadDataSet.setDrawCircles(false)
         uploadDataSet.color = ContextCompat.getColor(context, R.color.upload)
         uploadDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        downloadDataset.lineWidth = 2F
 
         mLineDataset = ArrayList()
         mLineDataset.add(dummydataset)
@@ -291,6 +330,7 @@ class TestmainFragment : Fragment() {
     }
 
     fun startTest() {
+        mViewModel.startPing("www.google.com")
         val downloaddataset = binding.linechartStrength
             .data.getDataSetByIndex(1) as LineDataSet
         downloaddataset.values = ArrayList<Entry>()
@@ -327,6 +367,10 @@ class TestmainFragment : Fragment() {
         animator.start()
     }
 
+    suspend fun saveTest(test:Test){
+        mTestRepo.insert(test)
+    }
+
     fun showAdd() {
         YoYo.with(Techniques.FadeOutUp)
             .delay(500)
@@ -342,7 +386,7 @@ class TestmainFragment : Fragment() {
 
     }
 
-    suspend fun loadBannerAd() {
+     fun loadBannerAd() {
         binding.myads
             .loadAd(mContext, "ca-app-pub-3940256099942544/1044960115",
                 object : AdmobView.ModernAdmobListener {

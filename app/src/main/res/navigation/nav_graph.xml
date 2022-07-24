@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.marwatsoft.speedtestmaster.ui.history.HistoryFragment"
-        android:label="fragment_history"
+        android:label="History"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/settingsFragment"
@@ -31,6 +31,12 @@
         tools:layout="@layout/fragment_testmain" >
         <argument
             android:name="url"
+            app:argType="string" />
+        <argument
+            android:name="provider"
+            app:argType="string" />
+        <argument
+            android:name="testserver"
             app:argType="string" />
     </fragment>
 </navigation>

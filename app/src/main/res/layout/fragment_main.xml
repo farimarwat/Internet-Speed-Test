@@ -168,16 +168,14 @@
             android:textFontWeight="600"
             android:textSize="18dp" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_retry"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Retry"
             android:textColor="@color/secondary"
-            app:cornerRadius="10dp"
-            app:strokeColor="@color/secondary" />
+            android:background="@drawable/bg_button_primary" />
     </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

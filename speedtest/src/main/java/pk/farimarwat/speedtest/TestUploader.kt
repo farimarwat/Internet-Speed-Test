@@ -82,7 +82,7 @@ class TestUploader constructor(builder:Builder) {
                 delay(100)
                 mEndTime = System.currentTimeMillis()
                 mUploadElapsedTime = ((mEndTime.minus(mStartTime)).div(1000.0))
-                mListener?.onProgress(getInstantUploadRate(), mUploadElapsedTime.toInt()*1000)
+                mListener?.onProgress(getInstantUploadRate(), mUploadElapsedTime)
                 if(mShouldStop || mUploadElapsedTime >= mTimeOut){
                     break
                 }
@@ -93,7 +93,7 @@ class TestUploader constructor(builder:Builder) {
                 roundNow((((mUploadedBytes / 1000.0) * 8) / mUploadElapsedTime), 2)
             mListener?.onFinished(mFinalUploadRate,
                 mUploadedBytes / 1000,
-                mUploadElapsedTime.toInt() * 1000)
+                mUploadElapsedTime)
         }
     }
     fun task() {
@@ -105,7 +105,6 @@ class TestUploader constructor(builder:Builder) {
             }
         }
         CoroutineScope(Dispatchers.IO + exp).launch {
-            val starttime = System.currentTimeMillis()
             delay(100)
             var mHttpsConn: HttpsURLConnection? = null
             val mTrustAllCerts = arrayOf<TrustManager>(
@@ -150,11 +149,10 @@ class TestUploader constructor(builder:Builder) {
                 val endtime = System.currentTimeMillis()
                 if(responsecode == HttpURLConnection.HTTP_OK){
                     mUploadedBytes += buffer.size / 1024
-                    elapsedtime = ((endtime.minus(starttime)).div(1000.0))
-                    mEndTime = System.currentTimeMillis()
-                    mUploadElapsedTime = ((mEndTime.minus(mStartTime)).div(1000.0))
+                    elapsedtime = ((endtime.minus(mStartTime)).div(1000.0))
                     setInstantUploadRate(mUploadedBytes, elapsedtime)
                 } else {
+                    stop()
                     mListener?.onError(mHttpsConn.responseMessage.toString())
                 }
                 if (elapsedtime > mTimeOut || mShouldStop) {
@@ -204,9 +202,8 @@ class TestUploader constructor(builder:Builder) {
 
     interface TestUploadListener {
         fun onStart()
-        fun onProgress(progress: Double, elapsedTimeMillis: Int)
-        fun onStopped()
-        fun onFinished(finalprogress: Double, datausedinkb: Int, elapsedTimeMillis: Int)
+        fun onProgress(progress: Double, elapsedTimeMillis: Double)
+        fun onFinished(finalprogress: Double, datausedinkb: Int, elapsedTimeMillis: Double)
         fun onError(msg: String)
     }
 }

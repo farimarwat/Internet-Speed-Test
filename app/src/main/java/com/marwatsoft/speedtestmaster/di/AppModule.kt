@@ -3,8 +3,11 @@ package com.marwatsoft.speedtestmaster.di
 import android.app.Application
 import android.net.ConnectivityManager
 import androidx.core.content.ContextCompat
+import androidx.room.Room
+import com.marwatsoft.speedtestmaster.data.Test.TestDao
+import com.marwatsoft.speedtestmaster.helpers.DATABASENAME_TEST
+import com.marwatsoft.speedtestmaster.data.TestDataHelper
 import com.marwatsoft.speedtestmaster.network.SpeedTestServices
-import com.marwatsoft.speedtestmaster.repository.SpeedTestRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +36,20 @@ object AppModule {
                 as ConnectivityManager
     }
 
-
+    @Singleton
+    @Provides
+    fun provideTestDataHelper(context: Application): TestDataHelper {
+        return Room.databaseBuilder(
+            context,
+            TestDataHelper::class.java,
+            DATABASENAME_TEST
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    @Singleton
+    @Provides
+    fun providesTestDao(dataHelper: TestDataHelper):TestDao{
+        return dataHelper.testdao()
+    }
 }

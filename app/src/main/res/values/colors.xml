@@ -9,9 +9,9 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="background">@color/primaryDark</color>
-    <color name="primary">#616161</color>
-    <color name="primaryDark">#373737</color>
-    <color name="primaryLight">#8e8e8e</color>
+    <color name="primary">#141526</color>
+    <color name="primaryDark">#000000</color>
+    <color name="primaryLight">#3b3b4e</color>
 
     <color name="secondary">#00e5ff</color>
     <color name="secondaryDark">#00b2cc</color>
@@ -31,5 +31,7 @@
     <color name="colorActiveGaugeText">#ffffff</color>
     <color name="colorNotActiveGaugeText">#80ffffff</color>
     <color name="download">#29daef</color>
-    <color name="upload">#9b33ef</color>
+    <color name="upload">#B96CF8</color>
+    <color name="ping">#FF04F10E</color>
+    <color name="jitter">@color/yellowLight</color>
 </resources>

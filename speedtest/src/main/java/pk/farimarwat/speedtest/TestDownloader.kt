@@ -86,7 +86,7 @@ class TestDownloader private constructor(builder:Builder){
                    mIsTestRunning = true
                    mEndTime = System.currentTimeMillis()
                    mDownloadElapsedTime = ((mEndTime.minus(mStartTime)).div(1000.0))
-                   mListener?.onProgress(getInstantDownloadRate(), mDownloadElapsedTime.toInt()*1000)
+                   mListener?.onProgress(getInstantDownloadRate(), mDownloadElapsedTime)
                    if(mDownloadElapsedTime >= mTimeout || mShouldStop){
 
                        mIsTestRunning = false
@@ -100,7 +100,7 @@ class TestDownloader private constructor(builder:Builder){
                    roundNow(((mDownloadedByte * 8) / (1000 * 1000.0)) / mDownloadElapsedTime, 2)
                mListener?.onFinished(mFinalDownloadRate,
                    mDownloadedByte / 1000,
-                   mDownloadElapsedTime.toInt()*1000)
+                   mDownloadElapsedTime)
                mIsTestRunning = false
 
            }
@@ -108,6 +108,7 @@ class TestDownloader private constructor(builder:Builder){
     }
 
     private fun task() {
+
         val exp = CoroutineExceptionHandler { coroutineContext, throwable ->
             stop()
             throwable.message?.let {
@@ -223,9 +224,8 @@ class TestDownloader private constructor(builder:Builder){
 
     interface TestDownloadListener {
         fun onStart()
-        fun onProgress(progress: Double, elapsedTimeMillis: Int)
-        fun onStopped()
-        fun onFinished(finalprogress: Double, datausedinkb: Int, elapsedTimeMillis: Int)
+        fun onProgress(progress: Double, elapsedTimeMillis: Double)
+        fun onFinished(finalprogress: Double, datausedinkb: Int, elapsedTimeMillis: Double)
         fun onError(msg: String)
     }
 }

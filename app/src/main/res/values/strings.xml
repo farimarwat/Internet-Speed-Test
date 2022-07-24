@@ -26,4 +26,8 @@
     <string name="upload_mbps">Upload Mbps</string>
     <string name="download">Download</string>
     <string name="upload">Upload</string>
+    <string name="ping">Ping</string>
+    <string name="jitter">Jitter</string>
+    <string name="testhistoryitem_download">%1$s Mbps</string>
+    <string name="testhistoryitem_upload">%1$s Mbps</string>
 </resources>

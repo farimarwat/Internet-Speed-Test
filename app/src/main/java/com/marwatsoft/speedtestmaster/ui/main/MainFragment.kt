@@ -43,10 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pk.farimarwat.modernadmob.AdmobView
-import pk.farimarwat.speedtest.models.STServer
-import pk.farimarwat.speedtest.models.TESTTYPE_DOWNLOAD
-import pk.farimarwat.speedtest.models.TESTTYPE_UPLOAD
-import pk.farimarwat.speedtest.models.TestingStatus
+import pk.farimarwat.speedtest.models.*
 import timber.log.Timber
 
 
@@ -68,6 +65,8 @@ class MainFragment : Fragment() {
     lateinit var mBehaviorServerBottomSheet: BottomSheetBehavior<ConstraintLayout>
     lateinit var mViewServerBottomSheet: ConstraintLayout
     lateinit var mUrl: String
+    lateinit var mSTServer: STServer
+    var mProvider:STProvider? = null
 
     //SpeedView
 
@@ -116,6 +115,7 @@ class MainFragment : Fragment() {
                             binding.groupGo.visibility = View.VISIBLE
                             val provider = mViewModel.mSTProvider.value
                             provider?.let {
+                                mProvider = it
                                 binding.txtProvidername.text = String.format(
                                     getString(R.string.provider), it.providername
                                 )
@@ -147,6 +147,7 @@ class MainFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mSTServerSelected.observe(viewLifecycleOwner) {
                     if (it != null) {
+                        mSTServer = it
                         binding.txtTestserver.visibility = View.VISIBLE
                         binding.txtTestserver.text = "${it.sponsor}(${it.name})"
                         mUrl = it.url
@@ -175,7 +176,9 @@ class MainFragment : Fragment() {
         mBehaviorServerBottomSheet = BottomSheetBehavior.from(mViewServerBottomSheet)
 
         binding.btnGo.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToTestmainFragment(mUrl)
+            val action = MainFragmentDirections.actionMainFragmentToTestmainFragment(
+                mUrl,mProvider?.providername!!,mSTServer.sponsor
+            )
             mNavController.navigate(action)
         }
         binding.txtChangetestserver.setOnClickListener {

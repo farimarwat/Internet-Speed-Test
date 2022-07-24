@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="2dp"
+    android:layout_marginBottom="4dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorCircularProgressBarBackground"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:id="@+id/txt_download"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_vertical"
+            android:text="@string/download_mbps"
+            android:textColor="@color/white"
+            android:textFontWeight="600"
+            app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24"
+            app:layout_constraintEnd_toStartOf="@+id/txt_upload"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/container_info"
+            tools:layout_editor_absoluteY="6dp"
+            app:drawableTint="@color/download" />
+
+        <TextView
+            android:id="@+id/txt_upload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_vertical"
+            android:text="@string/download_mbps"
+            android:textColor="@color/white"
+            android:textFontWeight="600"
+            app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_up_24"
+            app:drawableTint="@color/upload"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_download"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/txt_download"
+            app:layout_constraintTop_toTopOf="@+id/txt_download" />
+
+
+        <LinearLayout
+            android:id="@+id/container_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="72dp"
+            tools:layout_editor_absoluteY="31dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_date"
+            app:layout_constraintTop_toBottomOf="@+id/txt_download"
+            >
+            <TextView
+                android:id="@+id/txt_server"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins"
+                android:text="Server"
+                android:textColor="@color/quantum_grey"
+                tools:layout_editor_absoluteX="26dp"
+                tools:layout_editor_absoluteY="51dp"
+                />
+            <TextView
+                android:id="@+id/txt_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins"
+                android:text="Provider"
+                android:textColor="@color/quantum_grey"
+                tools:layout_editor_absoluteX="172dp"
+                tools:layout_editor_absoluteY="51dp"
+                />
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins"
+            android:text="12-01-2017"
+            android:textSize="12dp"
+            android:layout_marginTop="8dp"
+            android:textStyle="italic"
+            android:textColor="@color/quantum_grey"
+            tools:layout_editor_absoluteX="304dp"
+            tools:layout_editor_absoluteY="51dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_info"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
