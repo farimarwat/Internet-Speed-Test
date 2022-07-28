@@ -94,6 +94,16 @@ class DownloadTest private constructor(builder:Builder){
                 val fileUrls: MutableList<String> = ArrayList()
                 fileUrls.add(u + "random4000x4000.jpg")
                 fileUrls.add(u + "random3000x3000.jpg")
+                fileUrls.add(u + "random2000x2000.jpg")
+                fileUrls.add(u + "random1000x1000.jpg")
+                fileUrls.add(u + "random4000x4000.jpg")
+                fileUrls.add(u + "random3000x3000.jpg")
+                fileUrls.add(u + "random2000x2000.jpg")
+                fileUrls.add(u + "random1000x1000.jpg")
+                fileUrls.add(u + "random4000x4000.jpg")
+                fileUrls.add(u + "random3000x3000.jpg")
+                fileUrls.add(u + "random2000x2000.jpg")
+                fileUrls.add(u + "random1000x1000.jpg")
                 mStartTime = System.currentTimeMillis()
                 outer@ for (link in fileUrls) {
                     try {

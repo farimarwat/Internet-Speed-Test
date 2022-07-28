@@ -117,13 +117,17 @@ class TestDownloader private constructor(builder:Builder){
         }
         CoroutineScope(Dispatchers.IO + exp).launch {
             var mHttpsConn: HttpsURLConnection? = null
-            mTimeout = mTimeout
             val starttime = System.currentTimeMillis()
             var mUrl: URL
             var responseCode: Int
-            val fileUrls = listOf<String>(
-                "${getUrl()}random1000x1000.jpg",
-                "${getUrl()}random4000x4000.jpg"
+            val fileUrls = listOf(
+                "${getUrl()}random4000x4000.jpg",
+                "${getUrl()}random4000x4000.jpg",
+                "${getUrl()}random4000x4000.jpg",
+                "${getUrl()}random4000x4000.jpg",
+                "${getUrl()}random3000x3000.jpg",
+                "${getUrl()}random2000x2000.jpg",
+                "${getUrl()}random1000x1000.jpg"
             )
             var mInputStream: InputStream? = null
             val mTrustAllCerts = arrayOf<TrustManager>(
@@ -163,9 +167,7 @@ class TestDownloader private constructor(builder:Builder){
                         if (mInputStream != null) {
                             len = mInputStream?.read(buffer)!!
                         }
-                        if (len == -1) {
-                            break
-                        }
+
                         mDownloadedByte += len
                         val endtime = System.currentTimeMillis()
                         val elapsedtime = ((endtime.minus(starttime)).div(1000.0))

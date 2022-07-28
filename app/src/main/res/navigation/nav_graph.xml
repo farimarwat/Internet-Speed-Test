@@ -18,25 +18,43 @@
         android:id="@+id/historyFragment"
         android:name="com.marwatsoft.speedtestmaster.ui.history.HistoryFragment"
         android:label="History"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.marwatsoft.speedtestmaster.ui.settings.SettingsFragment"
-        android:label="fragment_settings"
+        android:label="Settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/testmainFragment"
         android:name="com.marwatsoft.speedtestmaster.ui.testmain.TestmainFragment"
-        android:label="fragment_testmain"
+        android:label="Speed Test Master"
         tools:layout="@layout/fragment_testmain" >
         <argument
             android:name="url"
             app:argType="string" />
         <argument
             android:name="provider"
-            app:argType="string" />
+            app:argType="pk.farimarwat.speedtest.models.STProvider" />
         <argument
-            android:name="testserver"
-            app:argType="string" />
+            android:name="server"
+            app:argType="pk.farimarwat.speedtest.models.STServer" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.marwatsoft.speedtestmaster.ui.map.MapFragment"
+        android:label="Test Server Location"
+        tools:layout="@layout/fragment_map" >
+        <argument
+            android:name="provider"
+            app:argType="pk.farimarwat.speedtest.models.STProvider"
+            app:nullable="true" />
+        <argument
+            android:name="server"
+            app:argType="pk.farimarwat.speedtest.models.STServer"
+            app:nullable="true" />
     </fragment>
 </navigation>

@@ -35,4 +35,21 @@
     <string name="help_connections">By selecting multiple option, multiple connections are established
         to the test server to increase performance and accuracy.
     </string>
+    <string name="help_servers">
+        Premium servers are more fast and accurate. These are servers according to your location nearby you
+    </string>
+    <string name="help_duration">Duration (in seconds) for both tests download and upload. Minimum is 12 seconds</string>
+    <string name="retry">Retry</string>
+    <string name="test_duration">Test Duration</string>
+    <string name="connection_type">Connection Type</string>
+    <string name="premium">Premium</string>
+    <string name="free">Free</string>
+    <string name="faqs">FAQs</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="test_servers">Test Servers</string>
+    <string name="about">About</string>
+    <string name="test_again">Test Again</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

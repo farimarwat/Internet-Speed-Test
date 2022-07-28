@@ -7,6 +7,5 @@ import retrofit2.http.GET
 
 interface SpeedTestServices {
 
-    @GET("api/android/config.php")
-    suspend fun getServers():Response<ResponseBody>
+
 }

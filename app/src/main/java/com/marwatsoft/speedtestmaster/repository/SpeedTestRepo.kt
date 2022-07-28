@@ -11,7 +11,5 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class SpeedTestRepo @Inject constructor(val appServices: SpeedTestServices) {
-    suspend fun getServers(): Flow<Response<ResponseBody>> = flow {
-        emit(appServices.getServers())
-    }.flowOn(Dispatchers.IO)
+
 }

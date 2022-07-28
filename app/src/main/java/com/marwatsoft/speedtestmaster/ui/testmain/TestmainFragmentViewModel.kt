@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.Entry
+import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
 import com.marwatsoft.speedtestmaster.repository.SpeedTestRepo
 import com.marwatsoft.speedtestmaster.utils.speedtest.HttpDownloadTest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,11 +26,13 @@ import javax.inject.Inject
 @HiltViewModel
 class TestmainFragmentViewModel @Inject constructor(
     val mContext: Application,
-    private val mSpeedTestRepo: SpeedTestRepo
+    val mSettings:SettingsHelper
 ) : ViewModel() {
     val mTestingStatus by lazy { MutableStateFlow<TestingStatus>(TestingStatus.Testing(false, "")) }
     val mSpeed by lazy { MutableStateFlow(0.0) }
-    val mTimeOut by lazy { 12 }
+    var mTimeOut = 12
+    var mConnectionType = SettingsHelper.CONNECTION_TYPE_MULTIPLE
+
     var mBuilderUpload: TestUploader? = null
     var mBuilderDownload: TestDownloader? = null
     val mEntryDownload by lazy { MutableLiveData<Entry>(null) }
@@ -37,16 +40,29 @@ class TestmainFragmentViewModel @Inject constructor(
     val mPing by lazy { MutableStateFlow(0) }
     val mJitter by lazy { MutableStateFlow(0) }
 
+    init {
+        getConnectionType()
+        getTimeOut()
+    }
     val expDownload = CoroutineExceptionHandler { coroutineContext, throwable ->
         val msg = throwable.message
         msg?.let {
             mTestingStatus.value = TestingStatus.Error(it)
         }
     }
+    fun getConnectionType() = viewModelScope.launch(Dispatchers.IO) {
+        mSettings.connection.collect{
+            mConnectionType = it
+        }
+    }
+    fun getTimeOut() = viewModelScope.launch(Dispatchers.IO) {
+        mSettings.timeout.collect{
+            mTimeOut = it
+        }
+    }
 
     fun startDownloadTest(url: String) = viewModelScope.launch(Dispatchers.IO + expDownload) {
-        val list = ArrayList<Entry>()
-        var xCounter = 0.0f
+        Timber.e("Type: ${mConnectionType}")
         mEntryDownload.postValue(null)
         mBuilderDownload = TestDownloader.Builder(url)
             .addListener(object : TestDownloader.TestDownloadListener {
@@ -55,6 +71,7 @@ class TestmainFragmentViewModel @Inject constructor(
                 }
 
                 override fun onProgress(progress: Double, elapsedTimeMillis: Double) {
+                    Timber.e("Time: ${elapsedTimeMillis}")
                     mSpeed.value = progress
                     mEntryDownload.postValue(null)
                     mEntryDownload.postValue(Entry((elapsedTimeMillis*1000).toFloat(), progress.toFloat()))
@@ -75,10 +92,12 @@ class TestmainFragmentViewModel @Inject constructor(
 
             })
             .setTimeOUt(mTimeOut)
+            .setThreadsCount(mConnectionType)
             .build()
         mBuilderDownload?.start()
     }
     //End Download Test
+
 
     //upload test
     val expUpload = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -121,6 +140,7 @@ class TestmainFragmentViewModel @Inject constructor(
 
             })
             .setTimeOUt(mTimeOut)
+            .setThreadsCount(mConnectionType)
             .build()
         mBuilderUpload?.start()
     }

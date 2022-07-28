@@ -14,10 +14,21 @@ data class Test(
     val downloadspeed:Double,
     @ColumnInfo(name="uploadspeed")
     val uploadspeed:Double,
+
     @ColumnInfo(name = "testserver")
     val testserver:String,
+    @ColumnInfo(name="testserver_lat")
+    val testserver_lat:String?,
+    @ColumnInfo(name="testserver_lon")
+    val testserver_lon:String?,
+
     @ColumnInfo(name = "provider")
     val provider:String?,
+    @ColumnInfo(name = "provider_lat")
+    val provider_lat:String?,
+    @ColumnInfo(name="provider_lon")
+    val provider_lon:String?,
+
     @ColumnInfo(name = "created")
     val created:Date?
 )

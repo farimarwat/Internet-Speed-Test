@@ -1,14 +1,14 @@
 package pk.farimarwat.speedtest
 
-import android.content.Context
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import okhttp3.CertificatePinner
+import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
@@ -48,7 +48,16 @@ class Servers private constructor(builder: Builder) {
     fun listServers(listener: ServerStatusListener) {
         listener.onLoading()
         CoroutineScope(Dispatchers.IO).launch {
+            val certificatePinner = CertificatePinner.Builder()
+                .add("www.speedtest.net","sha256/AwZuXoBD+efE/tN4oCYOJ3EY+PNbizd4riD5eAWG3tQ=")
+                .add("www.speedtest.net","sha256/FEzVOUp4dF3gI0ZVPRJhFbSJVXR+uQmMH65xhs1glH4=")
+                .add("www.speedtest.net","sha256/Y9mvm0exBk1JoQ57f9Vm28jKo5lFm/woKcVxrYxu80o=")
+                .build()
+            val okHttpClient = OkHttpClient.Builder()
+                .certificatePinner(certificatePinner)
+                .build()
             val services = Retrofit.Builder()
+                .client(okHttpClient)
                 .baseUrl(BASE_URL_SPEEDTEST)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -206,8 +215,12 @@ class Servers private constructor(builder: Builder) {
         val list = mutableListOf<STServer>()
         for (item in servers) {
             val server = item.select("server")
+            var url = server.attr("url")
+            if(!url.contains("8080")){
+                url = url.replace(":80", ":8080")
+            }
             val stserver = STServer(
-                server.attr("url").replace(":80", ":8080"),
+                url,
                 server.attr("lat"),
                 server.attr("lon"),
                 server.attr("name"),
@@ -215,12 +228,12 @@ class Servers private constructor(builder: Builder) {
             )
             stProvider?.let {
                 val from = LatLng(
-                    stProvider.lat.toDouble(),
-                    stProvider.lon.toDouble()
+                    stProvider.lat?.toDouble()!!,
+                    stProvider.lon?.toDouble()!!
                 )
                 val to = LatLng(
-                    stserver.lat.toDouble(),
-                    stserver.lon.toDouble()
+                    stserver.lat?.toDouble()!!,
+                    stserver.lon?.toDouble()!!
                 )
                 val distance = SphericalUtil.computeDistanceBetween(from, to) / 1000
                 stserver.distance = distance.toInt()

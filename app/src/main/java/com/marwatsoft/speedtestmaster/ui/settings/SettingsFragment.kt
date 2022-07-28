@@ -8,16 +8,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.databinding.FragmentHistoryBinding
 import com.marwatsoft.speedtestmaster.databinding.FragmentSettingsBinding
 import com.marwatsoft.speedtestmaster.helpers.DialogButtonClickListener
 import com.marwatsoft.speedtestmaster.helpers.STDialog
+import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
-
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
     lateinit var mContext:Context
     lateinit var binding:FragmentSettingsBinding
+    val mViewModel:SettingsFragmentViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +40,45 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initGui()
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.mConnectionType.collect{
+                    when(it){
+                       SettingsHelper.CONNECTION_TYPE_SINGLE -> {
+                            binding.toggleSingle.isChecked = true
+                            setBtnSingle()
+                        }
+                        SettingsHelper.CONNECTION_TYPE_MULTIPLE -> {
+                            binding.toggleMultiple.isChecked = true
+                            setBtnMultiple()
+                        }
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.mTimeout.collect{
+                   binding.edtDuration.setText(it.toString())
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.mServerType.collect{
+                    when(it){
+                        SettingsHelper.Servers_PUBLIC -> {
+                            binding.togglePublic.isChecked = true
+                            setBtnServerPublic()
+                        }
+                        SettingsHelper.SERVERS_PREMIUM -> {
+                            binding.togglePremium.isChecked = true
+                            setBtnServerPremium()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun initGui(){
@@ -37,28 +86,17 @@ class SettingsFragment : Fragment() {
             when(group.checkedButtonId){
                 R.id.toggle_multiple ->{
                     if(isChecked){
-                        binding.toggleMultiple.setTextColor(
-                           ContextCompat.getColor(mContext,R.color.white)
-                        )
-                        binding.toggleSingle.setTextColor(
-                            ContextCompat.getColor(mContext,R.color.greyPrimary)
-                        )
+                       setBtnMultiple()
                     }
                 }
                 R.id.toggle_single ->{
                     if(isChecked){
-                        binding.toggleMultiple.setTextColor(
-                            ContextCompat.getColor(mContext,R.color.greyPrimary)
-                        )
-                        binding.toggleSingle.setTextColor(
-                            ContextCompat.getColor(mContext,R.color.white)
-                        )
-                        Timber.e("Single")
+                        setBtnSingle()
                     }
                 }
             }
         }
-        binding.imgHelp.setOnClickListener {
+        binding.imgHelpConnection.setOnClickListener {
             val builder = STDialog.Builder(mContext)
                 .setMessage(getString(R.string.help_connections))
                 .setPositive("OK")
@@ -71,5 +109,94 @@ class SettingsFragment : Fragment() {
                 .build()
             builder.showDialog()
         }
+        binding.imgHelpDuration.setOnClickListener {
+            val builder = STDialog.Builder(mContext)
+                .setMessage(getString(R.string.help_duration))
+                .setPositive("OK")
+                .addListener(object: DialogButtonClickListener{
+                    override fun onButtonClicked(dialog: AlertDialog?) {
+                        dialog?.hide()
+                    }
+
+                })
+                .build()
+            builder.showDialog()
+        }
+        binding.edtDuration.doAfterTextChanged {
+            it?.let {
+                val str_duration = it.toString()
+                if(str_duration.isNotEmpty()){
+                    val duration = str_duration.toInt()
+                    if(duration in 12..20){
+                        mViewModel.storeTimeOut(duration)
+                    }
+                }
+            }
+        }
+        binding.toggleTestservers.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            when(group.checkedButtonId){
+                R.id.toggle_public ->{
+                    if(isChecked){
+                        setBtnServerPublic()
+                    }
+                }
+                R.id.toggle_premium ->{
+                    if(isChecked){
+                        setBtnServerPremium()
+                    }
+                }
+            }
+        }
+        binding.imgHelpTestserver.setOnClickListener {
+            val builder = STDialog.Builder(mContext)
+                .setMessage(getString(R.string.help_servers))
+                .setPositive("OK")
+                .addListener(object: DialogButtonClickListener{
+                    override fun onButtonClicked(dialog: AlertDialog?) {
+                        dialog?.hide()
+                    }
+
+                })
+                .build()
+            builder.showDialog()
+        }
+    }
+
+    fun setBtnMultiple(){
+        mViewModel.storeConnectionType(SettingsHelper.CONNECTION_TYPE_MULTIPLE)
+        binding.toggleMultiple.setTextColor(
+            ContextCompat.getColor(mContext,R.color.white)
+        )
+        binding.toggleSingle.setTextColor(
+            ContextCompat.getColor(mContext,R.color.greyPrimary)
+        )
+    }
+    fun setBtnSingle(){
+        mViewModel.storeConnectionType(SettingsHelper.CONNECTION_TYPE_SINGLE)
+        binding.toggleMultiple.setTextColor(
+            ContextCompat.getColor(mContext,R.color.greyPrimary)
+        )
+        binding.toggleSingle.setTextColor(
+            ContextCompat.getColor(mContext,R.color.white)
+        )
+    }
+
+    fun setBtnServerPublic(){
+        mViewModel.storeServerType(SettingsHelper.Servers_PUBLIC)
+        binding.togglePremium.setTextColor(
+            ContextCompat.getColor(mContext,R.color.greyPrimary)
+        )
+        binding.togglePublic.setTextColor(
+            ContextCompat.getColor(mContext,R.color.white)
+        )
+    }
+    fun setBtnServerPremium(){
+        mViewModel.storeServerType(SettingsHelper.SERVERS_PREMIUM)
+        binding.togglePremium.setTextColor(
+            ContextCompat.getColor(mContext,R.color.white)
+        )
+        binding.togglePublic.setTextColor(
+            ContextCompat.getColor(mContext,R.color.greyPrimary)
+        )
     }
 }

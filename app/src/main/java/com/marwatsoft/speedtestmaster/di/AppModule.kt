@@ -19,16 +19,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    val BASE_URL_SPEEDTEST = "https://www.speedtest.net/"
-    @Provides
-    @Singleton
-    fun providesSpeedTestServices():SpeedTestServices{
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL_SPEEDTEST)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(SpeedTestServices::class.java)
-    }
+
     @Singleton
     @Provides
     fun providesConnectivityManager(context: Application): ConnectivityManager {

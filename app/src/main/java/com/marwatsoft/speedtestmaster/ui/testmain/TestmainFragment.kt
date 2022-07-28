@@ -28,13 +28,14 @@ import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.data.Test.Test
 import com.marwatsoft.speedtestmaster.data.Test.TestRepo
 import com.marwatsoft.speedtestmaster.databinding.FragmentTestmainBinding
+import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pk.farimarwat.modernadmob.AdmobView
-import pk.farimarwat.speedtest.models.TESTTYPE_DOWNLOAD
-import pk.farimarwat.speedtest.models.TESTTYPE_UPLOAD
-import pk.farimarwat.speedtest.models.TestingStatus
+import pk.farimarwat.speedtest.models.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -47,8 +48,12 @@ class TestmainFragment : Fragment() {
     val mViewModel: TestmainFragmentViewModel by viewModels()
     val mNavArgs: TestmainFragmentArgs by navArgs()
     lateinit var mUrl: String
+    lateinit var mProvider:STProvider
+    lateinit var mServer:STServer
     @Inject
     lateinit var mTestRepo:TestRepo
+    @Inject
+    lateinit var mSettings:SettingsHelper
     var mDownloadSpeed = 0.0
     var mUploadSpeed = 0.0
 
@@ -66,11 +71,13 @@ class TestmainFragment : Fragment() {
         binding = FragmentTestmainBinding.inflate(inflater, container, false)
         mContext = requireContext()
         mUrl = mNavArgs.url
+        mProvider = mNavArgs.provider
+        mServer = mNavArgs.server
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initGui()
+
         //Collecting Testing status
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -140,8 +147,13 @@ class TestmainFragment : Fragment() {
                                 val date = c.time
                                 mTestRepo.insert(
                                     Test(
-                                        0,mDownloadSpeed,mUploadSpeed,
-                                        mNavArgs.testserver,mNavArgs.provider,date
+                                        0,
+                                        mDownloadSpeed,
+                                        mUploadSpeed,
+                                        mServer.sponsor.toString(),
+                                        mServer.lat,mServer.lon,
+                                        mProvider.providername, mProvider.lat, mProvider.lon,
+                                        date
                                     )
                                 )
                                 mViewModel.mTestingStatus.value = TestingStatus.Idle
@@ -230,11 +242,12 @@ class TestmainFragment : Fragment() {
                 }
             }
         }
+        initGui()
     }
 
     fun initGui() {
+        setupLineChart(mContext)
 
-        binding.speedView.prepareGauge(mContext)
         binding.speedView.addGaugeListener(object : SuperGaugeView.GaugeListener {
             override fun onGaugePrepared(prepared: Boolean) {
                 startTest()
@@ -270,18 +283,14 @@ class TestmainFragment : Fragment() {
             startTest()
         }
 
-        setupLineChart(mContext)
+        binding.speedView.prepareGauge(mContext)
     }
 
     fun setupLineChart(context: Context) {
         mListDownload = ArrayList()
         mListUpload = ArrayList()
-
         //Dummy line
         val list = ArrayList<Entry>()
-//        for(i in 0..mViewModel.mTimeOut){
-//            list.add(Entry(i.toFloat(),i.toFloat()))
-//        }
         list.add(Entry(0f,0f))
         list.add(Entry((mViewModel.mTimeOut*1000).toFloat(),0f))
         val dummydataset = LineDataSet(list,"Speed")

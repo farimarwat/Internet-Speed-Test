@@ -9,19 +9,25 @@
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/bg_button_toggle.xml" value="0.153" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/bg_dialog_container.xml" value="0.1165" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/bg_dialog_title_icon.xml" value="0.1165" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/bg_edit.xml" value="0.145" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/bg_testserver_selected.xml" value="0.1605" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/drawable/ic_speed.xml" value="0.1205" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/activity_fullscreen.xml" value="0.22" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/bottomsheet_servers.xml" value="0.22" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/content_main.xml" value="0.12395833333333334" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/dialog.xml" value="0.33" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_history.xml" value="0.33" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_main.xml" value="0.2886740331491713" />
-        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_settings.xml" value="0.25" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_map.xml" value="0.14114583333333333" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_settings.xml" value="0.33" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/fragment_testmain.xml" value="0.33" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/item_server.xml" value="0.25" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/item_testhistory.xml" value="0.33" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/layout_animation.xml" value="0.15989583333333332" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/layout/load_state_view.xml" value="0.13802083333333334" />
         <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/menu/menu_bottom.xml" value="0.10364583333333334" />
+        <entry key="..\:/Users/BISMILLAH/StudioProjects/SpeedTestMaster/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1605" />
       </map>
     </option>
   </component>

@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.marwatsoft.speedtestmaster.data.Test.Test
 import com.marwatsoft.speedtestmaster.data.Test.TestRepo
+import com.marwatsoft.speedtestmaster.data.Test.TesthistoryPagedSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,8 +24,10 @@ class HistoryFragmentViewModel @Inject constructor(
     suspend fun listAll(): Flow<PagingData<Test>> {
         val differed = viewModelScope.async(Dispatchers.IO) {
              Pager(
-                config = PagingConfig(pageSize = 10),
-                pagingSourceFactory = { repo.listAll() }
+                config = PagingConfig(
+                    pageSize = 10, enablePlaceholders = false, initialLoadSize = 10
+                ),
+                pagingSourceFactory = { TesthistoryPagedSource(repo) }
             ).flow.cachedIn(viewModelScope)
         }
         return differed.await()

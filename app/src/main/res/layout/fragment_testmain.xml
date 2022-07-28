@@ -7,8 +7,8 @@
     android:background="@color/colorBackground"
     tools:context=".ui.testmain.TestmainFragment"
     android:paddingTop="16dp"
+    android:layout_marginTop="?attr/actionBarSize"
     >
-
     <!-- Container speed view -->
 
     <androidx.constraintlayout.widget.Group
@@ -232,14 +232,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_retry"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/ButtonConnectionType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Retry"
-            android:textColor="@color/secondary"
-            app:cornerRadius="10dp"
-            app:strokeColor="@color/secondary" />
+            android:text="@string/retry"
+            android:textColor="@color/greyPrimary"
+            app:cornerRadius="10dp" />
     </LinearLayout>
     <!-- Ad Container -->
     <LinearLayout
@@ -250,7 +249,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical"
-        android:layout_marginBottom="60dp"
         android:visibility="gone"
         >
         <RelativeLayout
@@ -277,8 +275,8 @@
                 android:layout_margin="8dp"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
-                android:text="Test Again"
-                android:textColor="@color/secondary"
+                android:text="@string/test_again"
+                android:textColor="@color/greyPrimary"
                 android:textAlignment="center"
                 android:layout_alignParentEnd="true"
                 />
@@ -290,14 +288,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
             app:av_HeadlineFontFamily="@font/poppins"
             app:av_HeadlineColor="@color/teal_200"
-            app:av_adtype="AD_TYPE_MEDIUM"
+            app:av_adtype="AD_TYPE_MEDIUM_MINI"
             app:av_backgroundBody="@drawable/bg_adbody"
             app:av_BodyTextFontFamily="@font/poppins"
             app:av_StarRatingColor="@color/yellowPrimary"
+            app:av_actionButtonColor="@color/colorCircularProgressBarBackground"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

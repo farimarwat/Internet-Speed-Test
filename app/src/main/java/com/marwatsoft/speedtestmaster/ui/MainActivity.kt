@@ -8,7 +8,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationBarView
@@ -31,53 +33,39 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         mNavController = findNavController(R.id.nav_host_fragment_content_main)
-        supportActionBar?.hide()
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.mainFragment,R.id.historyFragment,R.id.settingsFragment)
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.bottomnavigation.setupWithNavController(navController)
-//        binding.bottomnavigation.setOnItemSelectedListener(object :NavigationBarView.OnItemSelectedListener{
-//            override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//                return when(item.itemId){
-//                    R.id.mainFragment ->{
-//                        navController.popBackStack()
-//                        navController.navigate(R.id.mainFragment)
-//                        true
-//                    }
-//                    R.id.historyFragment ->{
-//                        navController.popBackStack()
-//                        navController.navigate(R.id.historyFragment)
-//                         true
-//                    }
-//                    R.id.settingsFragment ->{
-//                        navController.popBackStack()
-//                        navController.navigate(R.id.settingsFragment)
-//                         true
-//                    }
-//                    else -> {  false}
-//                }
-//            }
-//
-//        })
+        setupActionBarWithNavController(mNavController, appBarConfiguration)
+        binding.bottomnavigation.setupWithNavController(mNavController)
+        mNavController.addOnDestinationChangedListener(object:NavController.OnDestinationChangedListener{
+            override fun onDestinationChanged(
+                controller: NavController,
+                destination: NavDestination,
+                arguments: Bundle?
+            ) {
+                when(destination.id){
+                    R.id.mainFragment ->{
+                        supportActionBar?.hide()
+                        binding.bottomnavigation.visibility = View.VISIBLE
+                    }
+                    R.id.mapFragment ->{
+                        binding.bottomnavigation.visibility = View.GONE
+                        supportActionBar?.show()
+                    }
+                    R.id.testmainFragment ->{
+                        binding.bottomnavigation.visibility = View.GONE
+                        supportActionBar?.show()
+                    }
+                    else ->{
+                        binding.bottomnavigation.visibility = View.VISIBLE
+                        supportActionBar?.show()
+                    }
+                }
+            }
+        })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun onSupportNavigateUp(): Boolean {
 

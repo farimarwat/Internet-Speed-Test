@@ -66,7 +66,7 @@ class MainFragment : Fragment() {
     lateinit var mViewServerBottomSheet: ConstraintLayout
     lateinit var mUrl: String
     lateinit var mSTServer: STServer
-    var mProvider:STProvider? = null
+    lateinit var mProvider:STProvider
 
     //SpeedView
 
@@ -83,14 +83,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initGui()
-        //Listening network listener
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED){
-                if(mViewModel.mServers == null){
-                    mViewModel.loadServers()
-                }
-            }
-        }
 
         //Collecting Server List
         lifecycleScope.launch {
@@ -155,7 +147,7 @@ class MainFragment : Fragment() {
                         mSTServer = it
                         binding.txtTestserver.visibility = View.VISIBLE
                         binding.txtTestserver.text = "${it.sponsor}(${it.name})"
-                        mUrl = it.url
+                        mUrl = it.url.toString()
                     } else {
                         binding.txtTestserver.visibility = View.GONE
                         binding.txtTestserver.text = ""
@@ -181,7 +173,7 @@ class MainFragment : Fragment() {
 
         binding.btnGo.setOnClickListener {
             val action = MainFragmentDirections.actionMainFragmentToTestmainFragment(
-                mUrl,mProvider?.providername!!,mSTServer.sponsor
+                mUrl,mProvider,mSTServer
             )
             mNavController.navigate(action)
         }
