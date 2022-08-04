@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.ads.LoadAdError
+import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.databinding.FragmentHistoryBinding
 import com.marwatsoft.speedtestmaster.databinding.FragmentSettingsBinding
@@ -22,6 +24,7 @@ import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import pk.farimarwat.modernadmob.AdmobView
 import timber.log.Timber
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -77,6 +80,11 @@ class SettingsFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                loadBannerAd()
             }
         }
     }
@@ -160,6 +168,19 @@ class SettingsFragment : Fragment() {
                 .build()
             builder.showDialog()
         }
+        binding.imgHelpAbout.setOnClickListener {
+            val builder = STDialog.Builder(mContext)
+                .setMessage(getString(R.string.help_about))
+                .setPositive("OK")
+                .addListener(object: DialogButtonClickListener{
+                    override fun onButtonClicked(dialog: AlertDialog?) {
+                        dialog?.hide()
+                    }
+
+                })
+                .build()
+            builder.showDialog()
+        }
     }
 
     fun setBtnMultiple(){
@@ -198,5 +219,36 @@ class SettingsFragment : Fragment() {
         binding.togglePublic.setTextColor(
             ContextCompat.getColor(mContext,R.color.greyPrimary)
         )
+    }
+
+    fun loadBannerAd() {
+        binding.myads
+            .loadAd(mContext, BuildConfig.ADMOB_NATIVE_ADD,
+                object : AdmobView.ModernAdmobListener {
+                    override fun onAdClicked() {
+
+                    }
+
+                    override fun onAdClosed() {
+
+                    }
+
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Timber.e("Ad error: ${error.message}")
+                    }
+
+                    override fun onAdImpression() {
+
+                    }
+
+                    override fun onAdLoaded() {
+                        Timber.e("Add Loaded")
+                    }
+
+                    override fun onAdOpened() {
+
+                    }
+
+                })
     }
 }

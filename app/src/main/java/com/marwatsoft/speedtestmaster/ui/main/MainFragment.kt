@@ -164,7 +164,6 @@ class MainFragment : Fragment() {
     }
 
     fun initGui() {
-
         binding.btnRetry.setOnClickListener {
             mViewModel.loadServers()
         }

@@ -39,6 +39,8 @@
         Premium servers are more fast and accurate. These are servers according to your location nearby you
     </string>
     <string name="help_duration">Duration (in seconds) for both tests download and upload. Minimum is 12 seconds</string>
+
+    <string name="help_about">Speed Test Master by marwatsoft</string>
     <string name="retry">Retry</string>
     <string name="test_duration">Test Duration</string>
     <string name="connection_type">Connection Type</string>
@@ -52,4 +54,5 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="internet_speed_booster">Internet Speed Booster</string>
 </resources>

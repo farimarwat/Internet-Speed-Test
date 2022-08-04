@@ -13,6 +13,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.adapters.TestHistoryAdapter
 import com.marwatsoft.speedtestmaster.adapters.TesthistoryLoadStateAdapter
@@ -34,6 +39,7 @@ class HistoryFragment : Fragment() {
     val mAdapter by lazy {
         TestHistoryAdapter(object :TestHistoryAdapter.TestHistoryListener{
             override fun onItemClicked(provider: STProvider, server: STServer) {
+                showInterstitial()
                val action = HistoryFragmentDirections.actionHistoryFragmentToMapFragment(
                    provider,server
                )
@@ -66,11 +72,39 @@ class HistoryFragment : Fragment() {
                 }
             }
         }
+        lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                loadInterstitial(mContext)
+            }
+        }
     }
     fun initGui(){
         binding.recyclerviewTesthistory.apply {
             layoutManager = LinearLayoutManager(mContext)
             adapter = mAdapter.withLoadStateFooter(TesthistoryLoadStateAdapter())
         }
+    }
+
+    var mInterstitial: InterstitialAd? = null
+    fun loadInterstitial(context: Context) {
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            context,
+            BuildConfig.ADMOB_INTERSTITIAL_ADD,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Timber.e(adError?.toString())
+                    mInterstitial = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    Timber.e("Interstitial ad loaded")
+                    mInterstitial = interstitialAd
+                }
+            })
+    }
+    fun showInterstitial(){
+        mInterstitial?.show(requireActivity())
     }
 }

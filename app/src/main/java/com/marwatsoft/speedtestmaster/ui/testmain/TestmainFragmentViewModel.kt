@@ -42,7 +42,6 @@ class TestmainFragmentViewModel @Inject constructor(
 
     init {
         getConnectionType()
-        getTimeOut()
     }
     val expDownload = CoroutineExceptionHandler { coroutineContext, throwable ->
         val msg = throwable.message
@@ -57,6 +56,7 @@ class TestmainFragmentViewModel @Inject constructor(
     }
     fun getTimeOut() = viewModelScope.launch(Dispatchers.IO) {
         mSettings.timeout.collect{
+            Timber.e("GetTimeOut: ${it}")
             mTimeOut = it
         }
     }
@@ -71,7 +71,6 @@ class TestmainFragmentViewModel @Inject constructor(
                 }
 
                 override fun onProgress(progress: Double, elapsedTimeMillis: Double) {
-                    Timber.e("Time: ${elapsedTimeMillis}")
                     mSpeed.value = progress
                     mEntryDownload.postValue(null)
                     mEntryDownload.postValue(Entry((elapsedTimeMillis*1000).toFloat(), progress.toFloat()))

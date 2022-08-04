@@ -6,12 +6,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.databinding.FragmentMapBinding
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pk.farimarwat.speedtest.models.STProvider
 import pk.farimarwat.speedtest.models.STServer
+import timber.log.Timber
 
 class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListener{
     lateinit var mContext:Context
@@ -46,6 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initGui()
     }
     fun initGui(){
@@ -95,10 +105,13 @@ class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListe
         }
     }
 
+
     fun loadIcons(){
         CoroutineScope(Dispatchers.IO).launch {
             mIconProvider = BitmapDescriptorFactory.fromResource(R.drawable.provider)
             mIconServer = BitmapDescriptorFactory.fromResource(R.drawable.server)
         }
     }
+
+
 }

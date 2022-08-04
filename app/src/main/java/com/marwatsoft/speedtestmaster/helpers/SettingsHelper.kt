@@ -32,7 +32,7 @@ class SettingsHelper @Inject constructor(val context: Application)  {
     }
 
     val timeout:Flow<Int> = context.dataStore.data.map { pref ->
-        pref[TIMEOUT] ?: 20
+        pref[TIMEOUT] ?: 12
     }
 
     suspend fun storeTimeout(timeout:Int){

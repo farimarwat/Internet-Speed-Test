@@ -23,7 +23,11 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.data.Test.Test
 import com.marwatsoft.speedtestmaster.data.Test.TestRepo
@@ -48,12 +52,14 @@ class TestmainFragment : Fragment() {
     val mViewModel: TestmainFragmentViewModel by viewModels()
     val mNavArgs: TestmainFragmentArgs by navArgs()
     lateinit var mUrl: String
-    lateinit var mProvider:STProvider
-    lateinit var mServer:STServer
+    lateinit var mProvider: STProvider
+    lateinit var mServer: STServer
+
     @Inject
-    lateinit var mTestRepo:TestRepo
+    lateinit var mTestRepo: TestRepo
+
     @Inject
-    lateinit var mSettings:SettingsHelper
+    lateinit var mSettings: SettingsHelper
     var mDownloadSpeed = 0.0
     var mUploadSpeed = 0.0
 
@@ -73,6 +79,7 @@ class TestmainFragment : Fragment() {
         mUrl = mNavArgs.url
         mProvider = mNavArgs.provider
         mServer = mNavArgs.server
+        mViewModel.getTimeOut()
         return binding.root
     }
 
@@ -151,7 +158,7 @@ class TestmainFragment : Fragment() {
                                         mDownloadSpeed,
                                         mUploadSpeed,
                                         mServer.sponsor.toString(),
-                                        mServer.lat,mServer.lon,
+                                        mServer.lat, mServer.lon,
                                         mProvider.providername, mProvider.lat, mProvider.lon,
                                         date
                                     )
@@ -163,6 +170,7 @@ class TestmainFragment : Fragment() {
                                 delay(1000)
                                 binding.speedView.setProgress(0f)
                                 showAdd()
+                                showInterstitial()
                             }
                         }
 
@@ -225,19 +233,24 @@ class TestmainFragment : Fragment() {
                 loadBannerAd()
             }
         }
-
-        //Collecting Ping
         lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                mViewModel.mPing.collect{
+                loadInterstitial(mContext)
+            }
+        }
+
+        //Collecting Ping
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.mPing.collect {
                     binding.txtNumberPing.text = "${it}"
                 }
             }
         }
         //Collecting Jitter
-        lifecycleScope.launch{
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                mViewModel.mJitter.collect{
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.mJitter.collect {
                     binding.txtNumberJitter.text = "${it}"
                 }
             }
@@ -246,8 +259,6 @@ class TestmainFragment : Fragment() {
     }
 
     fun initGui() {
-        setupLineChart(mContext)
-
         binding.speedView.addGaugeListener(object : SuperGaugeView.GaugeListener {
             override fun onGaugePrepared(prepared: Boolean) {
                 startTest()
@@ -279,21 +290,22 @@ class TestmainFragment : Fragment() {
                 }
                 .playOn(binding.speedView)
         }
-        binding.btnRetry.setOnClickListener{
+        binding.btnRetry.setOnClickListener {
             startTest()
         }
-
         binding.speedView.prepareGauge(mContext)
+        setupLineChart(mContext)
     }
 
     fun setupLineChart(context: Context) {
+        Timber.e("SetupLineChartTimeOut: ${mViewModel.mTimeOut}")
         mListDownload = ArrayList()
         mListUpload = ArrayList()
         //Dummy line
         val list = ArrayList<Entry>()
-        list.add(Entry(0f,0f))
-        list.add(Entry((mViewModel.mTimeOut*1000).toFloat(),0f))
-        val dummydataset = LineDataSet(list,"Speed")
+        list.add(Entry(0f, 0f))
+        list.add(Entry((mViewModel.mTimeOut * 1000).toFloat(), 0f))
+        val dummydataset = LineDataSet(list, "Speed")
         dummydataset.setDrawCircles(false)
         dummydataset.color = ContextCompat.getColor(context, R.color.colorBackground)
         dummydataset.mode = LineDataSet.Mode.CUBIC_BEZIER
@@ -326,7 +338,7 @@ class TestmainFragment : Fragment() {
             axisLeft.setDrawAxisLine(false)
             axisRight.setDrawGridLines(false)
             axisRight.setDrawAxisLine(false)
-            animateX(3000,Easing.Linear)
+            animateX(3000, Easing.Linear)
             description.isEnabled = false
             legend.isEnabled = false
             setDrawBorders(false)
@@ -376,7 +388,7 @@ class TestmainFragment : Fragment() {
         animator.start()
     }
 
-    suspend fun saveTest(test:Test){
+    suspend fun saveTest(test: Test) {
         mTestRepo.insert(test)
     }
 
@@ -395,9 +407,9 @@ class TestmainFragment : Fragment() {
 
     }
 
-     fun loadBannerAd() {
+    fun loadBannerAd() {
         binding.myads
-            .loadAd(mContext, "ca-app-pub-3940256099942544/1044960115",
+            .loadAd(mContext, BuildConfig.ADMOB_NATIVE_ADD,
                 object : AdmobView.ModernAdmobListener {
                     override fun onAdClicked() {
 
@@ -408,11 +420,11 @@ class TestmainFragment : Fragment() {
                     }
 
                     override fun onAdFailedToLoad(error: LoadAdError) {
-                        Timber.e(error.message)
+                        Timber.e("Ad error: ${error.message}")
                     }
 
                     override fun onAdImpression() {
-                        TODO("Not yet implemented")
+
                     }
 
                     override fun onAdLoaded() {
@@ -420,9 +432,33 @@ class TestmainFragment : Fragment() {
                     }
 
                     override fun onAdOpened() {
-                        TODO("Not yet implemented")
+
                     }
 
                 })
     }
+
+    var mInterstitial: InterstitialAd? = null
+    fun loadInterstitial(context: Context) {
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            context,
+            BuildConfig.ADMOB_INTERSTITIAL_ADD,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Timber.e(adError?.toString())
+                    mInterstitial = null
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    Timber.e("Interstitial ad loaded")
+                    mInterstitial = interstitialAd
+                }
+            })
+    }
+    fun showInterstitial(){
+        mInterstitial?.show(requireActivity())
+    }
+
 }

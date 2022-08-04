@@ -1,9 +1,11 @@
 package com.marwatsoft.speedtestmaster.di
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.net.ConnectivityManager
 import androidx.core.content.ContextCompat
 import androidx.room.Room
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.data.Test.TestDao
 import com.marwatsoft.speedtestmaster.helpers.DATABASENAME_TEST
 import com.marwatsoft.speedtestmaster.data.TestDataHelper
@@ -42,5 +44,12 @@ object AppModule {
     @Provides
     fun providesTestDao(dataHelper: TestDataHelper):TestDao{
         return dataHelper.testdao()
+    }
+
+    @SuppressLint("MissingPermission")
+    @Singleton
+    @Provides
+    fun providesFirebaseAnalytics(context: Application):FirebaseAnalytics{
+        return FirebaseAnalytics.getInstance(context)
     }
 }

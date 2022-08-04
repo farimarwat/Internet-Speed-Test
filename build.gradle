@@ -6,7 +6,8 @@ buildscript {
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:$dagger_hilt")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
-
+        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
     }
     repositories {
         // Check that you have Google's Maven repository (if not, add it).
