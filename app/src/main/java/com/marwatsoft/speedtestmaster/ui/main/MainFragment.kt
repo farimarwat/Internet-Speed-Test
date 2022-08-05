@@ -32,6 +32,7 @@ import com.dinuscxj.progressbar.CircleProgressBar
 import com.farimarwat.supergaugeview.SuperGaugeView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.adapters.STServerAdapter
 import com.marwatsoft.speedtestmaster.databinding.FragmentMainBinding
@@ -40,11 +41,14 @@ import com.marwatsoft.speedtestmaster.helpers.STDialog
 
 import com.marwatsoft.speedtestmaster.network.ApiStatus
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pk.farimarwat.modernadmob.AdmobView
 import pk.farimarwat.speedtest.models.*
 import timber.log.Timber
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -67,6 +71,8 @@ class MainFragment : Fragment() {
     lateinit var mUrl: String
     lateinit var mSTServer: STServer
     lateinit var mProvider:STProvider
+    @Inject
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     //SpeedView
 
@@ -156,6 +162,7 @@ class MainFragment : Fragment() {
             }
         }
 
+        mFirebaseAnalytics.logEvent("FRAGMENT_MAIN",null)
     }
 
     override fun onDestroyView() {

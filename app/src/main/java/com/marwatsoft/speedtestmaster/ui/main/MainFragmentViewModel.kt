@@ -55,7 +55,7 @@ class MainFragmentViewModel @Inject constructor(
             mListSTServer.value = ApiStatus.Error(it)
         }
     }
-    fun getServerType() = viewModelScope.launch(Dispatchers.IO) {
+    fun getServerType() = viewModelScope.launch(Dispatchers.IO + exp) {
         mSettings.servertype.collect{
             mServerType = it
             loadServers()

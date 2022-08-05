@@ -2,6 +2,7 @@ package com.marwatsoft.speedtestmaster.ui.testmain
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.data.Test.Test
@@ -54,10 +56,13 @@ class TestmainFragment : Fragment() {
     lateinit var mUrl: String
     lateinit var mProvider: STProvider
     lateinit var mServer: STServer
+    var mPing = 0
+    var mJitter = 0
 
     @Inject
     lateinit var mTestRepo: TestRepo
-
+    @Inject
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
     @Inject
     lateinit var mSettings: SettingsHelper
     var mDownloadSpeed = 0.0
@@ -69,6 +74,7 @@ class TestmainFragment : Fragment() {
     lateinit var mLineDataset: ArrayList<ILineDataSet>
     lateinit var mLineData: LineData
 
+    var mShareBody = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,7 +90,7 @@ class TestmainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        mFirebaseAnalytics.logEvent("FRAGMENT_TEST",null)
         //Collecting Testing status
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -171,6 +177,16 @@ class TestmainFragment : Fragment() {
                                 binding.speedView.setProgress(0f)
                                 showAdd()
                                 showInterstitial()
+                                mShareBody = getString(R.string.share,
+                                    mDownloadSpeed,
+                                    mUploadSpeed,
+                                    mPing,
+                                    mJitter,
+                                    mProvider.providername,
+                                    mServer.sponsor,
+                                    BuildConfig.APPLICATION_ID
+                                    )
+                                mFirebaseAnalytics.logEvent("TEST_FINISHED",null)
                             }
                         }
 
@@ -244,6 +260,7 @@ class TestmainFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mPing.collect {
                     binding.txtNumberPing.text = "${it}"
+                    mPing = it
                 }
             }
         }
@@ -252,6 +269,7 @@ class TestmainFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mJitter.collect {
                     binding.txtNumberJitter.text = "${it}"
+                    mJitter = it
                 }
             }
         }
@@ -292,6 +310,9 @@ class TestmainFragment : Fragment() {
         }
         binding.btnRetry.setOnClickListener {
             startTest()
+        }
+        binding.txtShareWithFriends.setOnClickListener{
+            shareDetails(mShareBody)
         }
         binding.speedView.prepareGauge(mContext)
         setupLineChart(mContext)
@@ -351,6 +372,7 @@ class TestmainFragment : Fragment() {
     }
 
     fun startTest() {
+        mFirebaseAnalytics.logEvent("TEST_STARTED",null)
         mViewModel.startPing("www.google.com")
         val downloaddataset = binding.linechartStrength
             .data.getDataSetByIndex(1) as LineDataSet
@@ -461,4 +483,12 @@ class TestmainFragment : Fragment() {
         mInterstitial?.show(requireActivity())
     }
 
+    fun shareDetails(body:String){
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE,null)
+        val shareIntent = Intent()
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.type="text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, body);
+        startActivity(Intent.createChooser(shareIntent,getString(R.string.send_to)))
+    }
 }

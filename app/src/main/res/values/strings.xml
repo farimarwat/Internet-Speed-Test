@@ -38,9 +38,8 @@
     <string name="help_servers">
         Premium servers are more fast and accurate. These are servers according to your location nearby you
     </string>
-    <string name="help_duration">Duration (in seconds) for both tests download and upload. Minimum is 12 seconds</string>
+    <string name="help_duration">Duration (in seconds) for both tests download and upload. Minimum is 12 and Maximum is 20 seconds</string>
 
-    <string name="help_about">Speed Test Master by marwatsoft</string>
     <string name="retry">Retry</string>
     <string name="test_duration">Test Duration</string>
     <string name="connection_type">Connection Type</string>
@@ -54,5 +53,22 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="internet_speed_booster">Internet Speed Booster</string>
+    <string name="share_with_friends">Share speed details with friends</string>
+    <string name="share">Hey friend! my internet speed details are below. Kindly send me back yours as well
+    by downloading the app from link below:\n
+        Downspeed: %1$s \n
+        Upspeed: %2$s \n
+        Ping: %3$s \n
+        Jitter: %4$s \n
+        Provider: %5$s \n
+        Test Server: %6$s \n
+        Download: https://play.google.com/store/apps/details?id=%7$s
+    </string>
+    <string name="send_to">Send to</string>
+    <string name="ms">ms</string>
+    <string name="url_privacy_policy">https://sites.google.com/view/speedtestmasterofficial</string>
+    <string name="help_about">
+        %1$s by marwatsoft \n
+        version: %2$s
+    </string>
 </resources>

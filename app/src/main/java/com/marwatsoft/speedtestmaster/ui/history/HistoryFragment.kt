@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.adapters.TestHistoryAdapter
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 import pk.farimarwat.speedtest.models.STProvider
 import pk.farimarwat.speedtest.models.STServer
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HistoryFragment : Fragment() {
@@ -48,6 +50,8 @@ class HistoryFragment : Fragment() {
 
         })
     }
+    @Inject
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,7 +66,7 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mFirebaseAnalytics.logEvent("FRAGMENT_History",null)
         initGui()
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){

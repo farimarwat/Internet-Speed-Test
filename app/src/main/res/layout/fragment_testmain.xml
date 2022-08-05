@@ -30,11 +30,11 @@
         android:textFontWeight="600"
         android:drawablePadding="8dp"
         app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_down_24"
-        android:drawableTint="@color/download"
         app:layout_constraintEnd_toStartOf="@+id/txt_upload"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:drawableTint="@color/download" />
 
     <TextView
         android:id="@+id/txt_upload"
@@ -48,11 +48,10 @@
         android:textFontWeight="600"
         android:drawablePadding="8dp"
         app:drawableStartCompat="@drawable/ic_baseline_arrow_circle_up_24"
-        android:drawableTint="@color/upload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/txt_download"
         app:layout_constraintTop_toTopOf="parent"
-         />
+        app:drawableTint="@color/upload" />
     <TextView
         android:id="@+id/txt_number_download"
         android:layout_width="wrap_content"
@@ -117,7 +116,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ms"
+                android:text="@string/ms"
                 android:textColor="@color/quantum_grey"
                 android:layout_marginStart="4dp"
                 />
@@ -132,11 +131,10 @@
                 android:textFontWeight="400"
                 android:drawablePadding="8dp"
                 app:drawableStartCompat="@drawable/ic_ping"
-                android:drawableTint="@color/ping"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/txt_download"
                 app:layout_constraintTop_toTopOf="parent"
-                />
+                app:drawableTint="@color/ping" />
         </LinearLayout>
         <!-- Jitter -->
         <LinearLayout
@@ -251,36 +249,42 @@
         android:orientation="vertical"
         android:visibility="gone"
         >
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="8dp"
+            android:orientation="horizontal"
+            android:gravity="center"
             >
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/txt_share_with_friends"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/internet_speed_booster"
+                android:text="@string/share_with_friends"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
                 android:fontFamily="@font/poppins"
                 android:textColor="@color/white"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:textSize="16dp"
+                android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_baseline_share_24"
+                android:drawablePadding="8dp"
                 />
             <TextView
                 android:id="@+id/btn_restart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_primary"
                 android:layout_margin="8dp"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
                 android:text="@string/test_again"
-                android:textColor="@color/greyPrimary"
                 android:textAlignment="center"
                 android:layout_alignParentEnd="true"
+                android:textColor="@color/white"
+                android:drawableStart="@drawable/ic_baseline_speed_24"
+                android:drawablePadding="8dp"
                 />
-        </RelativeLayout>
+        </LinearLayout>
         <pk.farimarwat.modernadmob.AdmobView
             android:id="@+id/myads"
             android:layout_width="match_parent"

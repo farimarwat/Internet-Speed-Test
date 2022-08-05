@@ -15,8 +15,8 @@ android {
         applicationId "com.marwatsoft.speedtestmaster"
         minSdk 21
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         buildConfigField "String","SERVER_API",SERVER_API
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,7 +24,7 @@ android {
     buildTypes {
         debug {
             buildConfigField("boolean", "DEBUGMODE", "true")
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {

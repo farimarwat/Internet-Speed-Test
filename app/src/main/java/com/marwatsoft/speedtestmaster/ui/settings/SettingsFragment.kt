@@ -2,6 +2,8 @@ package com.marwatsoft.speedtestmaster.ui.settings
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.ads.LoadAdError
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.databinding.FragmentHistoryBinding
@@ -26,11 +29,15 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import pk.farimarwat.modernadmob.AdmobView
 import timber.log.Timber
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
     lateinit var mContext:Context
     lateinit var binding:FragmentSettingsBinding
     val mViewModel:SettingsFragmentViewModel by viewModels()
+    @Inject
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +49,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initGui()
+        mFirebaseAnalytics.logEvent("FRAGMENT_SETTINGS",null)
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 mViewModel.mConnectionType.collect{
@@ -87,6 +94,7 @@ class SettingsFragment : Fragment() {
                 loadBannerAd()
             }
         }
+        initGui()
     }
 
     fun initGui(){
@@ -110,7 +118,7 @@ class SettingsFragment : Fragment() {
                 .setPositive("OK")
                 .addListener(object: DialogButtonClickListener{
                     override fun onButtonClicked(dialog: AlertDialog?) {
-                        dialog?.hide()
+                        dialog?.dismiss()
                     }
 
                 })
@@ -123,7 +131,7 @@ class SettingsFragment : Fragment() {
                 .setPositive("OK")
                 .addListener(object: DialogButtonClickListener{
                     override fun onButtonClicked(dialog: AlertDialog?) {
-                        dialog?.hide()
+                        dialog?.dismiss()
                     }
 
                 })
@@ -161,7 +169,7 @@ class SettingsFragment : Fragment() {
                 .setPositive("OK")
                 .addListener(object: DialogButtonClickListener{
                     override fun onButtonClicked(dialog: AlertDialog?) {
-                        dialog?.hide()
+                        dialog?.dismiss()
                     }
 
                 })
@@ -170,16 +178,21 @@ class SettingsFragment : Fragment() {
         }
         binding.imgHelpAbout.setOnClickListener {
             val builder = STDialog.Builder(mContext)
-                .setMessage(getString(R.string.help_about))
+                .setMessage(getString(R.string.help_about,getString(R.string.app_name),BuildConfig.VERSION_NAME))
                 .setPositive("OK")
                 .addListener(object: DialogButtonClickListener{
                     override fun onButtonClicked(dialog: AlertDialog?) {
-                        dialog?.hide()
+                        dialog?.dismiss()
                     }
 
                 })
                 .build()
             builder.showDialog()
+        }
+        binding.imgHelpPrivacypolicy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(getString(R.string.url_privacy_policy))
+            startActivity(intent)
         }
     }
 

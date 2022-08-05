@@ -19,16 +19,19 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.marwatsoft.speedtestmaster.BuildConfig
 import com.marwatsoft.speedtestmaster.R
 import com.marwatsoft.speedtestmaster.databinding.FragmentMapBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pk.farimarwat.speedtest.models.STProvider
 import pk.farimarwat.speedtest.models.STServer
 import timber.log.Timber
-
+import javax.inject.Inject
+@AndroidEntryPoint
 class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListener{
     lateinit var mContext:Context
     lateinit var binding:FragmentMapBinding
@@ -40,6 +43,8 @@ class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListe
     var mIconProvider: BitmapDescriptor? = null
     var mIconServer: BitmapDescriptor? = null
     val mLocations by lazy { mutableListOf<LatLng>() }
+    @Inject
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +60,7 @@ class MapFragment : Fragment(), OnMapReadyCallback , GoogleMap.OnCameraIdleListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mFirebaseAnalytics.logEvent("FRAGMENT_MAP",null)
         initGui()
     }
     fun initGui(){
