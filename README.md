@@ -29,6 +29,7 @@ Clone the project:
     ADMOB_NATIVE_ADD=ca-app-pub-122912349094032/1234543219
     ADMOB_INTERSTITIAL_ADD=ca-app-pub-8029123454321239/2343290943
 
+**These keys are dummy keys. so change only keys**
 ### 3 Put your firebase json file in app root dir
 and you are done.
 
