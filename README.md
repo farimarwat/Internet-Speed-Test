@@ -1,6 +1,12 @@
 # Internet-Speed-Test
 Ookla servers based android internet speed test (open source complete project)
 
+|   |   |
+| ------------ | ------------ |
+| <img src="https://github.com/farimarwat/Internet-Speed-Test/blob/master/images/03.png" width="70%" height="70%"/>  |  <img src="https://github.com/farimarwat/Internet-Speed-Test/blob/master/images/04.png" width="70%" height="70%"/> |
+
+**<a href="https://github.com/farimarwat/Internet-Speed-Test/tree/master/images" >More Screen Shots</a>**
+
 Android Internet Speed Test is an open source project that provides a robust and reliable internal speed test API based on the popular Ookla Speed Test servers. With this API, developers can easily integrate internet speed test functionality into their Android applications, providing users with an accurate and comprehensive analysis of their network performance.
 
 One of the key features of this project is its use of the Builder design pattern for the speed test API. This pattern allows developers to construct complex objects step by step, giving them greater control over the creation process and ensuring that all necessary components are included. This makes the API more flexible and easier to use, while also reducing the likelihood of errors or inconsistencies.
