@@ -8,6 +8,10 @@ Ookla servers based android internet speed test (open source complete project)
 **<a href="https://github.com/farimarwat/Internet-Speed-Test/tree/master/images" >More Screen Shots</a>**
 
 **Features**
+- Ookla servers
+- Download speed
+- Upload speed
+- Misc: ping, jitter etc
 - MVVM architecture
 - Room Database
 - Admob (Native/Legacy) ready
