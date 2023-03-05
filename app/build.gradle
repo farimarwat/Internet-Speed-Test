@@ -15,8 +15,8 @@ android {
         applicationId "com.marwatsoft.speedtestmaster"
         minSdk 21
         targetSdk 32
-        versionCode 2
-        versionName "1.1"
+        versionCode 5
+        versionName "1.2.2"
         buildConfigField "String","SERVER_API",SERVER_API
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -132,7 +132,7 @@ dependencies {
     implementation 'com.dinuscxj:circleprogressbar:1.3.0'
     implementation 'com.github.farimarwat:Super-Gauge-View:1.2'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
-    implementation 'com.github.farimarwat:Modern-Admob:1.1'
+    implementation 'com.github.farimarwat:Modern-Admob:1.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation project(path:':speedtest')
 }

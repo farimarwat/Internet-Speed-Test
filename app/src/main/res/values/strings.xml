@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Speed Test Master</string>
+    <string name="app_name">Internet Speed Test</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -66,9 +66,9 @@
     </string>
     <string name="send_to">Send to</string>
     <string name="ms">ms</string>
-    <string name="url_privacy_policy">https://sites.google.com/view/speedtestmasterofficial</string>
+    <string name="url_privacy_policy">https://sites.google.com/</string>
     <string name="help_about">
-        %1$s by marwatsoft \n
+        %1$s by your_brand \n
         version: %2$s
     </string>
 </resources>

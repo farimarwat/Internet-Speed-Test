@@ -116,7 +116,7 @@ class TestDownloader private constructor(builder:Builder){
             }
         }
         CoroutineScope(Dispatchers.IO + exp).launch {
-            var mHttpsConn: HttpsURLConnection? = null
+            var mHttpConn: HttpURLConnection? = null
             val starttime = System.currentTimeMillis()
             var mUrl: URL
             var responseCode: Int
@@ -152,16 +152,12 @@ class TestDownloader private constructor(builder:Builder){
             )
             outerloop@ for (link in fileUrls) {
                 mUrl = URL(link)
-                mHttpsConn = mUrl.openConnection() as HttpsURLConnection
-                val sc = SSLContext.getInstance("SSL")
-                sc.init(null, mTrustAllCerts, SecureRandom())
-                mHttpsConn.sslSocketFactory = sc.socketFactory
-                mHttpsConn.hostnameVerifier = HostnameVerifier { hostname, session -> true }
-                mHttpsConn?.connect()
-                responseCode = mHttpsConn?.responseCode!!
+                mHttpConn = mUrl.openConnection() as HttpURLConnection
+                mHttpConn?.connect()
+                responseCode = mHttpConn?.responseCode!!
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     val buffer = ByteArray(10240)
-                    mInputStream = mHttpsConn?.inputStream
+                    mInputStream = mHttpConn?.inputStream
                     var len = 0
                     while (true) {
                         if (mInputStream != null) {
@@ -180,13 +176,13 @@ class TestDownloader private constructor(builder:Builder){
 
                 } else {
                     stop()
-                    mHttpsConn?.responseMessage?.let {
+                    mHttpConn?.responseMessage?.let {
                         mListener?.onError(it)
                     }
                 }
             }
             mInputStream?.close()
-            mHttpsConn?.disconnect()
+            mHttpConn?.disconnect()
         }
     }
 

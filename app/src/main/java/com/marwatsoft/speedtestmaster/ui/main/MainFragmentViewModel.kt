@@ -2,33 +2,16 @@ package com.marwatsoft.speedtestmaster.ui.main
 
 import android.app.Application
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
 import com.marwatsoft.speedtestmaster.R
-import com.marwatsoft.speedtestmaster.SpeedTestLib.DownloadListener
-import com.marwatsoft.speedtestmaster.SpeedTestLib.DownloadTest
 import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
-import com.marwatsoft.speedtestmaster.model.*
 import com.marwatsoft.speedtestmaster.network.ApiStatus
-import com.marwatsoft.speedtestmaster.repository.SpeedTestRepo
-import com.marwatsoft.speedtestmaster.utils.speedtest.HttpDownloadTest
-import com.marwatsoft.speedtestmaster.utils.speedtest.HttpUploadTest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import org.jsoup.Jsoup
-import org.jsoup.parser.Parser
 import pk.farimarwat.speedtest.Servers
-import pk.farimarwat.speedtest.TestDownloader
-import pk.farimarwat.speedtest.TestUploader
 import pk.farimarwat.speedtest.models.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -46,9 +29,6 @@ class MainFragmentViewModel @Inject constructor(
    var mNetworkCallback:ConnectivityManager.NetworkCallback? = null
     val mSTServerSelected by lazy { MutableLiveData<STServer>(null) }
 
-    init {
-        getServerType()
-    }
     val exp = CoroutineExceptionHandler { coroutineContext, throwable ->
         val msg = throwable.message
         msg?.let {

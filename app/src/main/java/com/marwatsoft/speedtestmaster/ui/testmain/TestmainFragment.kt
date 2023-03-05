@@ -387,7 +387,6 @@ class TestmainFragment : Fragment() {
                 .toTypedArray().size - 1],
             ""
         )
-        mUrl = mUrl.replace("http://", "https://")
         mViewModel.startDownloadTest(mUrl)
     }
 

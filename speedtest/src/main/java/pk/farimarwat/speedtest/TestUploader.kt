@@ -1,9 +1,7 @@
 package pk.farimarwat.speedtest
 
 import android.annotation.SuppressLint
-import android.util.Log
 import kotlinx.coroutines.*
-import java.io.DataOutputStream
 import java.io.OutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -106,45 +104,22 @@ class TestUploader constructor(builder:Builder) {
         }
         CoroutineScope(Dispatchers.IO + exp).launch {
             delay(100)
-            var mHttpsConn: HttpsURLConnection? = null
-            val mTrustAllCerts = arrayOf<TrustManager>(
-                @SuppressLint("CustomX509TrustManager")
-                object : X509TrustManager {
-                    override fun getAcceptedIssuers(): Array<X509Certificate> {
-                        return arrayOf()
-                    }
+            var mHttpConn: HttpURLConnection? = null
 
-                    override fun checkClientTrusted(
-                        certs: Array<X509Certificate>,
-                        authType: String
-                    ) {
-                    }
-
-                    override fun checkServerTrusted(
-                        certs: Array<X509Certificate>,
-                        authType: String
-                    ) {
-                    }
-                }
-            )
             val buffer = ByteArray(150 * 1024)
 
             var outputStream: OutputStream?
 
             while (true) {
-                mHttpsConn = url.openConnection() as HttpsURLConnection
-                val sc = SSLContext.getInstance("SSL")
-                sc.init(null, mTrustAllCerts, SecureRandom())
-                mHttpsConn.sslSocketFactory = sc.socketFactory
-                mHttpsConn.hostnameVerifier = HostnameVerifier { hostname, session -> true }
-                mHttpsConn.doOutput = true
-                mHttpsConn.requestMethod = "POST"
-                mHttpsConn.setRequestProperty("Connection", "Keep-Alive")
-                mHttpsConn.connect()
-                outputStream = mHttpsConn.outputStream
+                mHttpConn = url.openConnection() as HttpURLConnection
+                mHttpConn.doOutput = true
+                mHttpConn.requestMethod = "POST"
+                mHttpConn.setRequestProperty("Connection", "Keep-Alive")
+                mHttpConn.connect()
+                outputStream = mHttpConn.outputStream
                 outputStream?.write(buffer, 0, buffer.size)
                 outputStream?.flush()
-                val responsecode = mHttpsConn.responseCode
+                val responsecode = mHttpConn.responseCode
                 var elapsedtime = 0.0
                 val endtime = System.currentTimeMillis()
                 if(responsecode == HttpURLConnection.HTTP_OK){
@@ -153,14 +128,14 @@ class TestUploader constructor(builder:Builder) {
                     setInstantUploadRate(mUploadedBytes, elapsedtime)
                 } else {
                     stop()
-                    mListener?.onError(mHttpsConn.responseMessage.toString())
+                    mListener?.onError(mHttpConn.responseMessage.toString())
                 }
                 if (elapsedtime > mTimeOut || mShouldStop) {
                     break
                 }
             }
             outputStream?.close()
-            mHttpsConn?.disconnect()
+            mHttpConn?.disconnect()
         }
     }
     private fun getUrl():String = this.mUrl

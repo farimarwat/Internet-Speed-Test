@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.Entry
 import com.marwatsoft.speedtestmaster.helpers.SettingsHelper
-import com.marwatsoft.speedtestmaster.repository.SpeedTestRepo
-import com.marwatsoft.speedtestmaster.utils.speedtest.HttpDownloadTest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TestmainFragmentViewModel @Inject constructor(
     val mContext: Application,
-    val mSettings:SettingsHelper
+    private val mSettings:SettingsHelper
 ) : ViewModel() {
     val mTestingStatus by lazy { MutableStateFlow<TestingStatus>(TestingStatus.Testing(false, "")) }
     val mSpeed by lazy { MutableStateFlow(0.0) }
