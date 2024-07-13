@@ -208,6 +208,11 @@ class TestmainFragment : Fragment() {
                                 binding.speedView.setProgress(spd)
                             }
                         }
+
+                        TestingStatus.Canceled -> TODO()
+                        is TestingStatus.Error -> TODO()
+                        is TestingStatus.Finished -> TODO()
+                        TestingStatus.Idle -> TODO()
                     }
                 }
             }

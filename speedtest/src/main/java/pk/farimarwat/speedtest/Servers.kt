@@ -54,7 +54,7 @@ class Servers private constructor(builder: Builder) {
                 .add("www.speedtest.net","sha256/Y9mvm0exBk1JoQ57f9Vm28jKo5lFm/woKcVxrYxu80o=")
                 .build()
             val okHttpClient = OkHttpClient.Builder()
-                .certificatePinner(certificatePinner)
+                //.certificatePinner(certificatePinner)
                 .build()
             val services = Retrofit.Builder()
                 .client(okHttpClient)
